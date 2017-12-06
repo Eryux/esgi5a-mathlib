@@ -1,0 +1,17 @@
+﻿Build started 06/12/2017 21:08:52.
+     1>Project "D:\Utilisateurs\Downloads\Math\MathLib\MathLib\MathLib.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /I..\..\glm /ZI /nologo /W3 /WX- /Od /D _DEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt MathLib.cpp
+         MathLib.cpp
+     1>d:\utilisateurs\downloads\math\mathlib\mathlib\mathlib.cpp(31): warning C4715: 'jarvis_walk': not all control paths return a value
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.lib" /MACHINE:X64 /DLL x64\Debug\dllmain.obj
+         x64\Debug\MathLib.obj
+         x64\Debug\stdafx.obj
+            Creating library D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.lib and object D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.exp
+         MathLib.vcxproj -> D:\Utilisateurs\Downloads\Math\MathLib\x64\Debug\MathLib.dll
+     1>Done Building Project "D:\Utilisateurs\Downloads\Math\MathLib\MathLib\MathLib.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.14
