@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿Build started 06/12/2017 21:37:51.
      1>Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib_Test\MathLib_Test.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
@@ -14,3 +15,7 @@
 Build succeeded.
 
 Time Elapsed 00:00:01.48
+=======
+﻿  MathLib_Test.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Test.exe
+  MathLib_Test.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Test.pdb (Full PDB)
+>>>>>>> a4ad62050d0fe110271eb25aaffff14eabe32349

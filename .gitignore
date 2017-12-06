@@ -6,6 +6,12 @@ MathUnity/[Bb]uilds/
 MathUnity/Assets/AssetStoreTools*
 MathLib/Debug
 MathLib/x64
+MathLib/MathLib/Debug
+MathLib/MathLib/x64
+MathLib/MathLib_Test/Debug
+MathLib/MathLib_Test/x64
+MathLib/MathLib_Unity/Debug
+MathLib/MathLib_Unity/x64
 
 # Visual Studio 2015 cache directory
 /.vs/

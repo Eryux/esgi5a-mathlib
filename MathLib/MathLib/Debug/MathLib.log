@@ -1,6 +1,8 @@
 ﻿  dllmain.cpp
   stdafx.cpp
   MathLib.cpp
-  Generating Code...
-     Creating library C:\Users\Nicolas\Downloads\Math\MathLib\Debug\MathLib.lib and object C:\Users\Nicolas\Downloads\Math\MathLib\Debug\MathLib.exp
-  MathLib.vcxproj -> C:\Users\Nicolas\Downloads\Math\MathLib\Debug\MathLib.dll
+  Génération de code en cours...
+d:\esgi\maths\avance\esgi5a-mathlib\mathlib\mathlib\mathlib.cpp(31): warning C4715: 'jarvis_walk' : les chemins de contrôle ne retournent pas tous une valeur
+     Création de la bibliothèque D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.lib et de l'objet D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.exp
+  MathLib.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.dll
+  MathLib.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.pdb (Full PDB)
