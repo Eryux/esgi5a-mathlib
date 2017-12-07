@@ -1,8 +1,5 @@
-﻿  dllmain.cpp
-  stdafx.cpp
-  MathLib.cpp
-  Génération de code en cours...
-d:\esgi\maths\avance\esgi5a-mathlib\mathlib\mathlib\mathlib.cpp(31): warning C4715: 'jarvis_walk' : les chemins de contrôle ne retournent pas tous une valeur
-     Création de la bibliothèque D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.lib et de l'objet D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.exp
+﻿  MathLib.cpp
+d:\esgi\maths\avance\esgi5a-mathlib\mathlib\mathlib\mathlib.cpp(35): warning C4715: 'jarvis_walk' : les chemins de contrôle ne retournent pas tous une valeur
+d:\esgi\maths\avance\esgi5a-mathlib\mathlib\mathlib\mathlib.cpp(114): warning C4715: 'Mathlib::test_graham_sort' : les chemins de contrôle ne retournent pas tous une valeur
   MathLib.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.dll
   MathLib.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib.pdb (Full PDB)

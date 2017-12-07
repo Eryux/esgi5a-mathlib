@@ -13,6 +13,8 @@ namespace Mathlib {
 		MATHLIB_API int classic_pow(int a, int p);
 
 		MATHLIB_API float * jarvis_walk(float * points, int nb_point);
+
+		MATHLIB_API void test();
 	}
 
 }
