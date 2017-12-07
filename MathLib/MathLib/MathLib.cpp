@@ -19,11 +19,11 @@ namespace Mathlib
 	}
 
 	// Test OK
-	float * jarvis_walk(float * points, int nb_point, int& out_size) 
+	int * jarvis_walk(float * points, int nb_point, int * out_size) 
 	{
 		if (nb_point < 3) return nullptr;
 
-		std::vector<float> result;
+		std::vector<int> result;
 
 		float xmin = points[0]; float ymin = points[1]; int start = 0;
 		for (int i = 1; i < nb_point; i++) {
@@ -39,8 +39,8 @@ namespace Mathlib
 		int j = 0;
 
 		do {
-			result.push_back(points[i * 2]);
-			result.push_back(points[i * 2 + 1]);
+			result.push_back(i * 2);
+			result.push_back(i * 2 + 1);
 
 			j = (i == 0) ? 1 : 0;
 
@@ -69,10 +69,10 @@ namespace Mathlib
 			i = inew;
 		} while (i != start);
 
-		out_size = result.size();
+		*out_size = result.size();
 
-		float * result_in_float = new float[out_size]();
-		for (int i = 0; i < out_size; result_in_float[i] = result[i], i++);
-		return (result_in_float);
+		int * result_in_int = new int[*out_size]();
+		for (int i = 0; i < *out_size; result_in_int[i] = result[i], i++);
+		return (result_in_int);
 	}
 }

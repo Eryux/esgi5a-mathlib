@@ -3,11 +3,15 @@
 
 typedef int(_cdecl * dll_mathlib_classic_pow_ptr)(int, int);
 
+typedef int * (_cdecl * dll_mathlib_jarvis_walk_ptr)(float *, int, int*);
+
 HINSTANCE hGetProcIDDL;
 
 extern "C"
 {
 	__declspec(dllexport) int classic_pow(int, int);
+
+	__declspec(dllexport) int * jarvis_walk(float *, int, int*);
 }
 
 void LoadDLL()
@@ -44,4 +48,19 @@ int classic_pow(int a, int p)
 	int r = f(a, p);
 	freeDLL();
 	return r;
+}
+
+int * jarvis_walk(float * p, int s, int* o) 
+{
+	LoadDLL();
+
+	dll_mathlib_jarvis_walk_ptr f = (dll_mathlib_jarvis_walk_ptr)GetProcAddress(hGetProcIDDL, "jarvis_walk");
+	if (!f) {
+		std::cerr << "Could not find function jarvis_walk in MathLib.dll" << std::endl;
+		return nullptr;
+	}
+
+	int * result = f(p, s, o);
+	freeDLL();
+	return result;
 }
