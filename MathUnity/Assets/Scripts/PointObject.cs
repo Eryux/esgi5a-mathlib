@@ -11,7 +11,12 @@ public class PointObject : MonoBehaviour {
     Material selectMaterial;
 
     [SerializeField]
+    Material markMaterial;
+
+    [SerializeField]
     MeshRenderer render;
+
+    bool marked = false;
 
     void Start () {
         
@@ -27,6 +32,20 @@ public class PointObject : MonoBehaviour {
     }
 
     public void Release()
+    {
+        if (marked)
+            Mark();
+        else
+            render.material = offMaterial;
+    }
+
+    public void Mark()
+    {
+        render.material = markMaterial;
+        marked = true;
+    }
+
+    public void UnMark()
     {
         render.material = offMaterial;
     }

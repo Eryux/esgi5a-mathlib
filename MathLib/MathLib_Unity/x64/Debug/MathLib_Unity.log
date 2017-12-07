@@ -1,2 +1,15 @@
-﻿  MathLib_Unity.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.dll
-  MathLib_Unity.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.pdb (Full PDB)
+﻿Build started 07/12/2017 21:27:59.
+     1>Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib_Unity\MathLib_Unity.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /ZI /nologo /W3 /WX- /Od /D _DEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_UNITY_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt MathLib_Unity.cpp
+         MathLib_Unity.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.dll" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.lib" /MACHINE:X64 /DLL x64\Debug\dllmain.obj
+         x64\Debug\MathLib_Unity.obj
+         x64\Debug\stdafx.obj
+         MathLib_Unity.vcxproj -> D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\x64\Debug\MathLib_Unity.dll
+     1>Done Building Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib_Unity\MathLib_Unity.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.77

@@ -38,7 +38,7 @@ Transform:
   m_GameObject: {fileID: 1663108436892376}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -95,6 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   offMaterial: {fileID: 2100000, guid: 90cc9a18c71224240906dabc7e6d750b, type: 2}
   selectMaterial: {fileID: 2100000, guid: 859c4ad25ef12494fa7d6c34cacdc501, type: 2}
+  markMaterial: {fileID: 2100000, guid: 9c74fe45ffe43354fbd6dff8b79c8b9b, type: 2}
   render: {fileID: 23470803182599440}
 --- !u!135 &135679860770649148
 SphereCollider:

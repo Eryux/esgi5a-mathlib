@@ -6,15 +6,15 @@
 #define MATHLIB_API __declspec(dllimport)
 #endif
 
+#include "glm.hpp"
+
 namespace Mathlib {
 
 	extern "C" 
 	{
 		MATHLIB_API int classic_pow(int a, int p);
-
-		MATHLIB_API float * jarvis_walk(float * points, int nb_point);
-
 		MATHLIB_API void test();
+		MATHLIB_API int * jarvis_walk(float * points, int nb_point, int* out_size);
 	}
 
 }
