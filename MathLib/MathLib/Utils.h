@@ -20,5 +20,5 @@ namespace Utils {
 	//returns the barycenter of an array of points
 	glm::vec2 get_barycenter(std::vector<glm::vec2> point_list);
 	//returns the dual-chained list sorted by the angle between Ox and the vector formed by bary and the points array
-	std::list<glm::vec2> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
+	std::list<int> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
 }
