@@ -48,6 +48,27 @@ glm::vec2 Utils::get_barycenter(std::vector<glm::vec2> point_list)
 	return glm::vec2(x_sum/size, y_sum/size);
 }
 
+std::list<glm::vec2> Utils::triangulate_sort(std::vector<glm::vec2> points) {
+
+	std::list<glm::vec2> result_list;
+
+	//structure de comparaison basée sur l'abscisse puis l'ordonnée
+	struct Comparator {
+		bool operator()(glm::vec2 a, glm::vec2 b) const
+		{
+			if (a.x == b.x) return a.y < b.y;
+			else return a.x < b.x;
+		}
+	};
+
+	std::sort(points.begin(), points.end(), Comparator());
+
+	for (int i = 0; i < points.size(); i++) {
+		result_list.push_back(points[i]);
+	}
+	return result_list;
+}
+
 std::list<glm::vec2> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 {
 	std::list<glm::vec2> result_list;
@@ -71,4 +92,17 @@ std::list<glm::vec2> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> p
 		result_list.push_back(points[i]);
 	}
 	return result_list;
+}
+
+bool Utils::is_colinear(glm::vec2 a, glm::vec2 b) {
+	if (a.x == 0.0f || b.x == 0.0f) return (b.x == 0.0f && a.x == 0.0f);
+	if (a.y == 0.0f || b.y == 0.0f) return (b.y == 0.0f && a.y == 0.0f);
+	return a.x / b.x - a.y / b.y < 0.001f;
+}
+
+std::vector<glm::vec2*> Utils::get_visible_edges(glm::vec2 point, std::vector<glm::vec2*> triangulation) {
+	std::vector<glm::vec2*> visible_edges;
+	glm::vec2* edge = new glm::vec2[2]();
+	visible_edges.push_back(edge);
+	return visible_edges;
 }

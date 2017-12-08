@@ -5,6 +5,7 @@
 #include "glm.hpp"
 #include <iostream>
 #include "Utils.h"
+#include <sstream>
 #define PI 3.14159265359
 
 
@@ -78,6 +79,99 @@ namespace Mathlib
 		return (result_in_int);
 	}
 
+	std::vector<glm::vec2*> incremental_triangulation(std::vector<glm::vec2> points) {
+		//poly page 26
+		std::vector<glm::vec2*> triangulation;
+		if (points.size() <= 2) {
+			glm::vec2* triangle = new glm::vec2[3]();
+			triangle[0] = points.front();
+			triangle[1] = points.front();
+			if(points.size() == 2) triangle[2] = points.back();
+			else triangle[2] = points.front();
+			triangulation.push_back(triangle);
+			return triangulation;
+		}
+		//1)
+		std::list<glm::vec2> sorted_points = Utils::triangulate_sort(points);
+		//2)a)
+		std::list<glm::vec2> aligned_points;
+		aligned_points.push_back(*sorted_points.begin());
+		aligned_points.push_back(*std::next(sorted_points.begin()));
+		std::list<glm::vec2>::iterator next_point;
+		for (std::list<glm::vec2>::iterator f_it = sorted_points.begin(); f_it != std::prev(sorted_points.end(), 2); ++f_it) {
+			if (Utils::is_colinear(Utils::get_vector_from_points(*f_it, *std::next(f_it)), Utils::get_vector_from_points(*std::next(f_it), *std::next(f_it, 2)))) {
+				aligned_points.push_back(*std::next(f_it, 2));
+				//si tous les points sont alignés
+				if (f_it == std::prev(sorted_points.end(), 2)) {
+					glm::vec2* triangle = new glm::vec2[3]();
+					triangle[0] = points.front();
+					triangle[1] = points.front();
+					triangle[2] = points.back();
+					triangulation.push_back(triangle);
+					return triangulation;
+				}
+			}
+			else {
+				//Pk+1
+				next_point = std::next(f_it, 2);
+				break;
+			}
+		}
+		//2)b)
+		for (std::list<glm::vec2>::iterator f_it = aligned_points.begin(); f_it != std::prev(aligned_points.end()); ++f_it) {
+			glm::vec2* triangle = new glm::vec2[3]();
+			triangle[0] = *f_it;
+			triangle[1] = *std::next(f_it);
+			triangle[2] = *next_point;
+			triangulation.push_back(triangle);
+		}
+		next_point = std::next(next_point);
+		//TODO mettre les premières arêtes ?
+		//3)
+		for (std::list<glm::vec2>::iterator f_it = next_point; f_it != std::prev(sorted_points.end()); ++f_it) {
+			//3)a)
+			//TODO ajouter les arêtes dans un tableau et le passer dans get_visible_edges ?
+			std::vector<glm::vec2*> visible_edges = Utils::get_visible_edges(*next_point, triangulation);
+			//3)b)
+			for (auto edge : visible_edges) {
+				glm::vec2* triangle = new glm::vec2[3]();
+				triangle[0] = edge[0];
+				triangle[1] = edge[1];
+				triangle[2] = *next_point;
+				triangulation.push_back(triangle);
+			}
+			//TODO mettre a jouer les arêtes ?
+		}
+		return triangulation;
+		//eventuellement aplanir triangulation en mettant les points dans un float* 
+		//(où les 6 premiers floats sont p1x, p1y, p2x, p2y, p3x, p3y) avec p1p2p3 le premier triangle 
+	}
+#pragma region tests
+
+	std::string debug_vec2(glm::vec2 pt) {
+		std::ostringstream os;
+		os << "x : " << pt.x << " | y: " << pt.y << " ";
+		return os.str();
+	}
+
+	bool test_incremental_triangulation_size2() {
+		glm::vec2 p1(1, 1);
+		glm::vec2 p2(-1, -1);
+		std::vector<glm::vec2> tab;
+		tab.push_back(p1);
+		tab.push_back(p2);
+		std::vector<glm::vec2*> result = incremental_triangulation(tab);
+		std::vector<glm::vec2*> triangulation;
+		glm::vec2 triangle[3];
+		triangle[0] = p1;
+		triangle[1] = p2;
+		triangle[2] = p2;
+		triangulation.push_back(triangle);
+		//std::cout << "result : " << debug_vec2(result[0][0]) << debug_vec2(result[0][1]) << debug_vec2(result[0][2]) << std::endl;
+		//std::cout << "triangle : " << debug_vec2(triangulation[0][0]) << debug_vec2(triangulation[0][1]) << debug_vec2(triangulation[0][2]) << std::endl;
+		return (result[0][0] == triangulation[0][0] && result[0][1] == triangulation[0][1] && result[0][2] == triangulation[0][2]);
+	}
+
 	bool test_barycenter() {
 		glm::vec2 p1(1, 1);
 		glm::vec2 p2(-1, -1);
@@ -140,7 +234,7 @@ namespace Mathlib
 			std::cout << "probleme graham sort : barycentre" << std::endl;
 			return false;
 		}
-		std::list<glm::vec2> result; 
+		std::list<glm::vec2> result;
 		result.push_back(p1);
 		result.push_back(p2);
 		result.push_back(p3);
@@ -166,6 +260,11 @@ namespace Mathlib
 		std::cout << "test du oriented angle : " << std::boolalpha << test_oriented_angle() << std::endl;
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
+		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;
+
 	}
+#pragma endregion
+
+	
 }
 
