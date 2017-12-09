@@ -8,12 +8,19 @@ namespace Utils {
 
 	struct edge {
 		glm::vec2 s1, s2;
+		triangle * t1;
+		triangle * t2;
 	};
 
 	struct triangle {
 		edge * a1;
 		edge * a2;
 		edge * a3;
+	};
+
+	struct cercle {
+		float r;
+		glm::vec2 c;
 	};
 
 	float sign(float x);
@@ -40,8 +47,10 @@ namespace Utils {
 	//retourne les aretes visibles par point dans triangulation
 	std::vector<edge*> get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<glm::vec2*> triangulation);
 	// Flipping d'arete
-	void edge_flipping(triangle * t1, triangle * t2);
+	void edge_flipping(std::vector<edge*> edges);
 	bool check_delaunay_crit(edge * a);
+	// Cercle circonscrit
+	cercle get_circumscribed_circle(triangle * triangle);
 	//check si une arête est visible par un point
 	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<glm::vec2*> triangulation);
 	//retourne la liste des arêtes correspondant à mon nuage de points
