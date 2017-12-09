@@ -197,12 +197,12 @@ bool Utils::check_delaunay_crit(Utils::edge * a)
 bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<Utils::edge*> edge_list)
 {
 	//calcul du vecteur correspondant au edge
-	glm::vec2 edge_vector = glm::vec2(edge->s2.x - edge->s2.x, edge->s2.y - edge->s2.y);
+	glm::vec2 edge_vector = glm::vec2(edge->s2.x - edge->s1.x, edge->s2.y - edge->s1.y);
 
 	//trouver l'equation de la droite du edge ax+by+c=0
 	float a, b, c;
 	if (edge_vector.x < 0.001 && edge_vector.x > -0.001) {
-		a = 1; b = 0; c = -edge->s2.y;
+		a = 1; b = 0; c = -edge->s2.x;
 	}
 	else {
 		a = edge_vector.y / edge_vector.x;
@@ -217,12 +217,13 @@ bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<Utils::edg
 	// sinon parcours la liste des points de ta triangulation et check pour le premier point qui
 	// ne soit pas sur la droite de l'edge si le signe de ce point appliqué a la droite est différent
 	// du signe de point appliqué a la droite alors ils sont pas du meme coté et point voit egde
-	for (auto edge : edge_list) {
-		for (int i = 0; i < 3; i++) {
-			float triangle_point_in_equation = a * edge->s1.x + b * edge->s1.y + c;
-			if (triangle_point_in_equation > 0.0001 || triangle_point_in_equation < -0.0001)
-				return !Utils::sign(triangle_point_in_equation) == sign(point_in_equation);
-		}
+	for (auto checking_edge : edge_list) {
+		float triangle_point_in_equation = a * checking_edge->s1.x + b * checking_edge->s1.y + c;
+		if (triangle_point_in_equation > 0.0001 || triangle_point_in_equation < -0.0001)
+			return !(Utils::sign(triangle_point_in_equation) == sign(point_in_equation));
+		triangle_point_in_equation = a * checking_edge->s2.x + b * checking_edge->s2.y + c;
+		if (triangle_point_in_equation > 0.0001 || triangle_point_in_equation < -0.0001)
+			return !(Utils::sign(triangle_point_in_equation) == sign(point_in_equation));
 	}
 	return false;
 }

@@ -11,7 +11,7 @@
 
 namespace Mathlib
 {
-	int classic_pow(int a, int p) 
+	int classic_pow(int a, int p)
 	{
 		for (int i = 1; i < p; i++, a *= a);
 		return a;
@@ -22,7 +22,7 @@ namespace Mathlib
 	}
 
 	// Test OK
-	int * jarvis_walk(float * points, int nb_point, int * out_size) 
+	int * jarvis_walk(float * points, int nb_point, int * out_size)
 	{
 		if (nb_point < 3) return nullptr;
 
@@ -38,7 +38,7 @@ namespace Mathlib
 
 		glm::vec2 right_support = glm::vec2(0.0f, -1.0f);
 
-		int i = start; 
+		int i = start;
 		int j = 0;
 
 		do {
@@ -52,9 +52,9 @@ namespace Mathlib
 			float lmax = Utils::norm(vec);
 			int inew = j;
 
-			for (j = inew + 1; j < nb_point; j++) 
+			for (j = inew + 1; j < nb_point; j++)
 			{
-				if (j != i) 
+				if (j != i)
 				{
 					glm::vec2 vec_2 = Utils::get_vector_from_points(glm::vec2(points[i * 2], points[i * 2 + 1]), glm::vec2(points[j * 2], points[j * 2 + 1]));
 					float angle = Utils::jarvis_angle(right_support, vec_2);
@@ -86,7 +86,7 @@ namespace Mathlib
 
 		std::vector<glm::vec2> v_points;
 		for (int i = 0; i < nb_point; i++) {
-			v_points.push_back(glm::vec2(points[i * 2], points[i * 2+ 1]));
+			v_points.push_back(glm::vec2(points[i * 2], points[i * 2 + 1]));
 		}
 
 		glm::vec2 barycenter = Utils::get_barycenter(v_points);
@@ -183,7 +183,7 @@ namespace Mathlib
 			}
 			else {
 				//Pk+1
-				next_point = std::next(f_it);
+				next_point = std::next(f_it, 2);
 				break;
 			}
 		}
@@ -217,7 +217,7 @@ namespace Mathlib
 		for (std::list<glm::vec2>::iterator f_it = next_point; f_it != sorted_points.end(); ++f_it) {
 			//3)a)
 			std::list<Utils::edge*> convex_envelope = Utils::get_convex_envelope(edge_list);
-			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*next_point, convex_envelope, edge_list);
+			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*f_it, convex_envelope, edge_list);
 			//3)b)
 			for (Utils::edge* edge : visible_edges) {
 				Utils::edge* s1_new = new Utils::edge(edge->s1, *f_it);
@@ -262,6 +262,21 @@ namespace Mathlib
 		//std::cout << "triangle : " << debug_vec2(triangulation[0][0]) << debug_vec2(triangulation[0][1]) << debug_vec2(triangulation[0][2]) << std::endl;
 		return (result[0][0] == triangulation[0][0] && result[0][1] == triangulation[0][1] && result[0][2] == triangulation[0][2]);
 	}*/
+
+	void test_triangulation() {
+		glm::vec2 p1(1, 1);
+		glm::vec2 p2(-1, -1);
+		glm::vec2 p3(-1, 0);
+		glm::vec2 p4(1, 0);
+		glm::vec2 p5(1, -1);
+		std::vector<glm::vec2> tab;
+		tab.push_back(p1);
+		tab.push_back(p2);
+		tab.push_back(p3);
+		tab.push_back(p4);
+		tab.push_back(p5);
+		incremental_triangulation(tab);
+	}
 
 	bool test_barycenter() {
 		glm::vec2 p1(1, 1);
@@ -310,7 +325,7 @@ namespace Mathlib
 			std::cout << "probleme oriented angle 2PI : angles positifs" << std::endl;
 			return false;
 		}
-		return ((2 * PI - Utils::oriented_angle(p1, p2)) - Utils::oriented_angle_2PI(p2, p1)) <0.0001f;
+		return ((2 * PI - Utils::oriented_angle(p1, p2)) - Utils::oriented_angle_2PI(p2, p1)) < 0.0001f;
 	}
 
 	/*bool test_graham_sort() {
@@ -343,7 +358,7 @@ namespace Mathlib
 		}
 	}*/
 
-	MATHLIB_API void test()	{
+	MATHLIB_API void test() {
 		/*std::cout << "test du barycentre : " << std::boolalpha << test_barycenter() << std::endl;
 		std::cout << "test du produit scalaire : " << std::boolalpha << test_scalar_product() << std::endl;
 		std::cout << "test de la norme : " << std::boolalpha << test_norm() << std::endl;
@@ -352,5 +367,7 @@ namespace Mathlib
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
 		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
+		test_triangulation();
 	}
 #pragma endregion
+}
