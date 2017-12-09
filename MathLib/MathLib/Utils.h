@@ -7,13 +7,27 @@
 namespace Utils {
 
 	struct edge {
+		edge(glm::vec2 s1, glm::vec2 s2) { this->s1 = s1; this->s2 = s2; };
 		glm::vec2 s1, s2;
+		triangle* t1;
+		triangle* t2;
 	};
 
 	struct triangle {
+		triangle(edge* a1, edge* a2, edge* a3) { this->a1 = a1; this->a2 = a2; this->a3 = a3; };
 		edge * a1;
 		edge * a2;
 		edge * a3;
+	};
+
+	struct triangulation {
+		std::vector<edge*> edge_list;
+		std::vector<triangle*> triangle_list;
+	};
+
+	struct cercle {
+		float r;
+		glm::vec2 c;
 	};
 
 	float sign(float x);
@@ -32,22 +46,24 @@ namespace Utils {
 	//returns the barycenter of an array of points
 	glm::vec2 get_barycenter(std::vector<glm::vec2> point_list);
 	//returns the dual-chained list sorted by the abscisse and then ordinate
-	std::list<glm::vec2> triangulate_sort(std::vector<glm::vec2> point);
+	std::list<glm::vec2> triangulate_sort(std::vector<glm::vec2> points);
 	//returns the dual-chained list sorted by the angle between Ox and the vector formed by bary and the points array
 	std::list<int> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
 	//check if two vectors are colinear
-	bool is_colinear(glm::vec2 a, glm::vec2 b);
+	bool is_colinear(edge a, edge b);
 	//retourne les aretes visibles par point dans triangulation
-	std::vector<edge*> get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<glm::vec2*> triangulation);
+	std::vector<edge*> get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<edge*> edge_list);
 	// Flipping d'arete
 	void edge_flipping(triangle * t1, triangle * t2);
 	bool check_delaunay_crit(edge * a);
 	//check si une arête est visible par un point
-	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<glm::vec2*> triangulation);
+	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<Utils::edge*> edge_list);
 	//retourne la liste des arêtes correspondant à mon nuage de points
-	std::list<edge*> get_convex_envelope(float* points, int nb_points);
+	std::list<edge*> get_convex_envelope(std::vector<edge*> edge_list);
 	//convertit un vector<glm::vec2> en point*
 	float* convert_from_vector(std::vector<glm::vec2> points);
 	//convertit un vector<glm::vec*> en point*
-	float* convert_from_triangulation(std::vector<glm::vec2*> triangulation);
+	float* convert_from_triangulation(triangulation triangulation);
+	// renvoie le cercle circonscrit au triangle
+	cercle get_circumscribed_circle(triangle* triangle);
 }

@@ -152,68 +152,88 @@ namespace Mathlib
 		return result_in_int;
 	}
 
-	float* incremental_triangulation(std::vector<glm::vec2> points) {
+	Utils::triangulation* incremental_triangulation(std::vector<glm::vec2> points) {
 		//poly page 26
-		std::vector<glm::vec2*> triangulation;
 		if (points.size() <= 2) {
-			glm::vec2* triangle = new glm::vec2[3]();
-			triangle[0] = points.front();
-			triangle[1] = points.front();
-			if(points.size() == 2) triangle[2] = points.back();
-			else triangle[2] = points.front();
-			triangulation.push_back(triangle);
-			return Utils::convert_from_triangulation(triangulation);
+			std::cerr << "pas assez de points dans la triangulation" << std::endl;
+			return nullptr;
 		}
 		//1)
 		std::list<glm::vec2> sorted_points = Utils::triangulate_sort(points);
+		Utils::triangulation* triangulation = new Utils::triangulation();
 		//2)a)
-		std::list<glm::vec2> aligned_points;
-		aligned_points.push_back(*sorted_points.begin());
-		aligned_points.push_back(*std::next(sorted_points.begin()));
+		std::list<Utils::edge*> aligned_edges;
+		Utils::edge* first_edge = new Utils::edge(*sorted_points.begin(), *std::next(sorted_points.begin()));
+		aligned_edges.push_back(first_edge);
 		std::list<glm::vec2>::iterator next_point;
 		for (std::list<glm::vec2>::iterator f_it = sorted_points.begin(); f_it != std::prev(sorted_points.end(), 2); ++f_it) {
-			if (Utils::is_colinear(Utils::get_vector_from_points(*f_it, *std::next(f_it)), Utils::get_vector_from_points(*std::next(f_it), *std::next(f_it, 2)))) {
-				aligned_points.push_back(*std::next(f_it, 2));
+			if (Utils::is_colinear(*first_edge, Utils::edge(*std::next(f_it), *std::next(f_it, 2)))) {
+				aligned_edges.push_back(new Utils::edge(*std::next(f_it), *std::next(f_it, 2)));
 				//si tous les points sont alignés
-				if (f_it == std::prev(sorted_points.end(), 2)) {
-					glm::vec2* triangle = new glm::vec2[3]();
-					triangle[0] = points.front();
-					triangle[1] = points.front();
-					triangle[2] = points.back();
-					triangulation.push_back(triangle);
-					return Utils::convert_from_triangulation(triangulation);
+				if (f_it == std::prev(sorted_points.end(), 3)) {
+					Utils::triangle* triangle = new Utils::triangle(new Utils::edge(sorted_points.front(), sorted_points.back()), new Utils::edge(sorted_points.front(), sorted_points.back()), new Utils::edge(sorted_points.front(), sorted_points.back()));
+					std::cout << "tous les points sont alignés" << std::endl;
+					std::vector<Utils::edge*> edge_list(aligned_edges.begin(), aligned_edges.end());
+					triangulation->edge_list = edge_list;
+					std::vector<Utils::triangle*> triangle_list;
+					triangle_list.push_back(triangle);
+					triangulation->triangle_list = triangle_list;
+					return triangulation;
 				}
 			}
 			else {
 				//Pk+1
-				next_point = std::next(f_it, 2);
+				next_point = std::next(f_it);
 				break;
 			}
 		}
 		//2)b)
-		for (std::list<glm::vec2>::iterator f_it = aligned_points.begin(); f_it != std::prev(aligned_points.end()); ++f_it) {
-			glm::vec2* triangle = new glm::vec2[3]();
-			triangle[0] = *f_it;
-			triangle[1] = *std::next(f_it);
-			triangle[2] = *next_point;
-			triangulation.push_back(triangle);
+		std::vector<Utils::edge*> edge_list;
+		std::vector<Utils::triangle*> triangle_list;
+		//initialisation du premier edge formé avec le nouveau point
+		Utils::edge* my_edge = new Utils::edge(*sorted_points.begin(), *next_point);
+		for (std::list<glm::vec2>::iterator f_it = sorted_points.begin(); f_it != std::prev(next_point); ++f_it) {
+			//chaque point créé les edges dont il a besoin pour faire les triangles qu'il touche
+			//il n'ajoute que le triangle qu'il genere avec le point suivant 
+			//et les deux arêtes de ce triangle qui partent de lui (sauf le dernier)
+			Utils::edge* next_point_edge = new Utils::edge(*f_it, *std::next(f_it));
+			Utils::edge* next_new_point_edge = new Utils::edge(*std::next(f_it), *next_point);
+			Utils::triangle* triangle = new Utils::triangle(my_edge, next_point_edge, next_new_point_edge);
+			if (my_edge->t1 == nullptr) my_edge->t1 = triangle; //normalement ce cas n'est que pour le premier point
+			else my_edge->t2 = triangle; //cas général
+			next_point_edge->t1 = triangle;
+			next_new_point_edge->t1 = triangle;
+			edge_list.push_back(my_edge);
+			edge_list.push_back(next_point_edge);
+			triangle_list.push_back(triangle);
+			my_edge = next_new_point_edge;
 		}
+		//dernier edge formé avec le nouveau point
+		edge_list.push_back(my_edge);
+
+
 		next_point = std::next(next_point);
 		//3)
-		for (std::list<glm::vec2>::iterator f_it = next_point; f_it != std::prev(sorted_points.end()); ++f_it) {
+		for (std::list<glm::vec2>::iterator f_it = next_point; f_it != sorted_points.end(); ++f_it) {
 			//3)a)
-			std::list<Utils::edge*> convex_envelope = Utils::get_convex_envelope(Utils::convert_from_triangulation(triangulation), triangulation.size()*3);
-			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*next_point, convex_envelope, triangulation);
+			std::list<Utils::edge*> convex_envelope = Utils::get_convex_envelope(edge_list);
+			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*next_point, convex_envelope, edge_list);
 			//3)b)
-			for (auto edge : visible_edges) {
-				glm::vec2* triangle = new glm::vec2[3]();
-				triangle[0] = edge->s1;
-				triangle[1] = edge->s2;
-				triangle[2] = *next_point;
-				triangulation.push_back(triangle);
+			for (Utils::edge* edge : visible_edges) {
+				Utils::edge* s1_new = new Utils::edge(edge->s1, *f_it);
+				Utils::edge* s2_new = new Utils::edge(edge->s2, *f_it);
+				Utils::triangle* triangle = new Utils::triangle(edge, s1_new, s2_new);
+				s1_new->t1 = triangle;
+				s2_new->t1 = triangle;
+				edge->t2 = triangle;
+				edge_list.push_back(s1_new);
+				edge_list.push_back(s2_new);
+				triangle_list.push_back(triangle);
 			}
 		}
-		return Utils::convert_from_triangulation(triangulation);
+		triangulation->edge_list = edge_list;
+		triangulation->triangle_list = triangle_list;
+		return triangulation;
 		//(où les 6 premiers floats sont p1x, p1y, p2x, p2y, p3x, p3y) avec p1p2p3 le premier triangle 
 	}
 

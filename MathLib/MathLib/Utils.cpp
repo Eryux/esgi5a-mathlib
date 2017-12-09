@@ -55,6 +55,28 @@ glm::vec2 Utils::get_barycenter(std::vector<glm::vec2> point_list)
 	return glm::vec2(x_sum/size, y_sum/size);
 }
 
+std::list<glm::vec2> Utils::triangulate_sort(std::vector<glm::vec2> points)
+{
+	std::list<glm::vec2> result_list;
+	//structure de comparaison basée sur l'abscisse puis l'ordonnée
+	struct Comparator {
+		bool operator()(glm::vec2 a, glm::vec2 b) const
+		{
+			if (a.x == b.x) return a.y < b.y;
+			else return a.x < b.x;
+		}
+	};
+
+	std::sort(points.begin(), points.end(), Comparator());
+	
+	for (int i = 0; i < points.size(); i++) {
+		result_list.push_back(points[i]);		
+	}
+
+	return result_list;	
+}
+
+
 std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 {
 	std::vector<glm::vec2*> tmp; for (int i = 0; i < points.size(); tmp.push_back(&points[i]), ++i);
@@ -106,16 +128,18 @@ std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 	return result_list;
 }
 
-bool Utils::is_colinear(glm::vec2 a, glm::vec2 b) {
+bool Utils::is_colinear(Utils::edge a1, Utils::edge b1) {
+	glm::vec2 a = glm::vec2(a1.s2.x - a1.s1.x, a1.s2.y - a1.s1.y);
+	glm::vec2 b = glm::vec2(b1.s2.x - b1.s1.x, b1.s2.y - b1.s1.y);
 	if (a.x == 0.0f || b.x == 0.0f) return (b.x == 0.0f && a.x == 0.0f);
 	if (a.y == 0.0f || b.y == 0.0f) return (b.y == 0.0f && a.y == 0.0f);
 	return a.x / b.x - a.y / b.y < 0.001f;
 }
 
-std::vector<Utils::edge*> Utils::get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<glm::vec2*> triangulation) {
+std::vector<Utils::edge*> Utils::get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<Utils::edge*> edge_list) {
 	std::vector<Utils::edge*> visible_edges;
-	for (auto edge : convex_envelope) {
-		if (is_edge_visible(point, edge, triangulation)) {
+	for (Utils::edge* edge : convex_envelope) {
+		if (is_edge_visible(point, edge, edge_list)) {
 			visible_edges.push_back(edge);
 		}
 	}
@@ -163,12 +187,12 @@ void Utils::edge_flipping(Utils::triangle * t1, Utils::triangle * t2)
 	}
 }
 
-bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<glm::vec2*> triangulation)
+bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<Utils::edge*> edge_list)
 {
 	//calcul du vecteur correspondant au edge
 	glm::vec2 edge_vector = glm::vec2(edge->s2.x - edge->s2.x, edge->s2.y - edge->s2.y);
 
-	//trouver l'equation de la droite du edge
+	//trouver l'equation de la droite du edge ax+by+c=0
 	float a, b, c;
 	if (edge_vector.x < 0.001 && edge_vector.x > -0.001) {
 		a = 1; b = 0; c = -edge->s2.y;
@@ -186,30 +210,21 @@ bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<glm::vec2*
 	// sinon parcours la liste des points de ta triangulation et check pour le premier point qui
 	// ne soit pas sur la droite de l'edge si le signe de ce point appliqué a la droite est différent
 	// du signe de point appliqué a la droite alors ils sont pas du meme coté et point voit egde
-	for (auto triangle : triangulation) {
+	for (auto edge : edge_list) {
 		for (int i = 0; i < 3; i++) {
-			float triangle_point_in_equation = a * triangle[i].x + b * triangle[i].y + c;
-			if (triangle_point_in_equation > 0.0001 || triangle_point_in_equation < -0.0001) {
-				if (Utils::sign(triangle_point_in_equation) == sign(point_in_equation)) {
-					return false;
-				}
-				return true;
-			}
+			float triangle_point_in_equation = a * edge->s1.x + b * edge->s1.y + c;
+			if (triangle_point_in_equation > 0.0001 || triangle_point_in_equation < -0.0001)
+				return !Utils::sign(triangle_point_in_equation) == sign(point_in_equation);
 		}
 	}
 	return false;
 }
 
-std::list<Utils::edge*> Utils::get_convex_envelope(float * points, int nb_points)
+std::list<Utils::edge*> Utils::get_convex_envelope(std::vector<Utils::edge*> edge_list)
 {
 	std::list<Utils::edge*> convex_envelope;
-	int* out_size;
-	int * indexes = Mathlib::jarvis_walk(points, nb_points, out_size);
-	for (int i = 0; i < *out_size; i += 4) {
-		Utils::edge* edge = new Utils::edge();
-		edge->s1 = glm::vec2(points[indexes[i]], points[indexes[i + 1]]);
-		edge->s2 = glm::vec2(points[indexes[i + 2]], points[indexes[i + 3]]);
-		convex_envelope.push_back(edge);
+	for (Utils::edge* edge: edge_list) {
+		if (edge->t2 == nullptr) convex_envelope.push_back(edge);
 	}
 	return convex_envelope;
 }
@@ -224,7 +239,7 @@ float * Utils::convert_from_vector(std::vector<glm::vec2> points)
 	return out_point;
 }
 
-float * Utils::convert_from_triangulation(std::vector<glm::vec2*> triangulation)
+/*float * Utils::convert_from_triangulation(std::vector<glm::vec2*> triangulation)
 {
 	float* out_point = new float[triangulation.size() * 2 * 3]();
 	for (int i = 0; i < triangulation.size(); i++) {
@@ -236,4 +251,14 @@ float * Utils::convert_from_triangulation(std::vector<glm::vec2*> triangulation)
 		out_point[2 * (i + 2) + 1] = triangulation[i][2].y;
 	}
 	return out_point;
+}*/
+
+Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
+	glm::vec2 a1s1 = triangle->a1->s1;
+	glm::vec2 a1s2 = triangle->a1->s2;
+	glm::vec2 middle1 = glm::vec2((a1s1.x + a1s2.x) / 2, (triangle->a1->s1.y + triangle->a1->s2.y) / 2);
+
+	glm::vec2 middle2 = glm::vec2((triangle->a2->s1.x + triangle->a2->s2.x) / 2, (triangle->a2->s1.y + triangle->a2->s2.y) / 2);
+	return cercle();
 }
+
