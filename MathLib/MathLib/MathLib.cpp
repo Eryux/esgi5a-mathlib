@@ -219,14 +219,18 @@ namespace Mathlib
 			std::list<Utils::edge*> convex_envelope = Utils::get_convex_envelope(edge_list);
 			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*f_it, convex_envelope, edge_list);
 			//3)b)
+			Utils::edge* s1_new = nullptr;
+			Utils::edge* s2_new = nullptr;
 			for (Utils::edge* edge : visible_edges) {
-				Utils::edge* s1_new = new Utils::edge(edge->s1, *f_it);
-				Utils::edge* s2_new = new Utils::edge(edge->s2, *f_it);
+				if(s2_new == nullptr) s1_new = new Utils::edge(edge->s1, *f_it);
+				else s1_new = s2_new;
+				s2_new = new Utils::edge(edge->s2, *f_it);
 				Utils::triangle* triangle = new Utils::triangle(edge, s1_new, s2_new);
-				s1_new->t1 = triangle;
+				if(s1_new->t1 != nullptr) s1_new->t2 = triangle;
+				else s1_new->t1 = triangle;
 				s2_new->t1 = triangle;
 				edge->t2 = triangle;
-				edge_list.push_back(s1_new);
+				if(edge_list.back() != s1_new) edge_list.push_back(s1_new);
 				edge_list.push_back(s2_new);
 				triangle_list.push_back(triangle);
 			}
@@ -264,17 +268,27 @@ namespace Mathlib
 	}*/
 
 	void test_triangulation() {
-		glm::vec2 p1(1, 1);
-		glm::vec2 p2(-1, -1);
-		glm::vec2 p3(-1, 0);
-		glm::vec2 p4(1, 0);
-		glm::vec2 p5(1, -1);
+		glm::vec2 p1(0, 0);
+		glm::vec2 p2(0, 2);
+		glm::vec2 p3(0, 3);
+		glm::vec2 p4(1, 3);
+		glm::vec2 p5(2, 2.8);
+		glm::vec2 p6(1.3, 1);
+		glm::vec2 p7(3, 2);
+		glm::vec2 p8(3.2, 1);
+		glm::vec2 p9(3, -1);
+		glm::vec2 p10(5, 2.5);
 		std::vector<glm::vec2> tab;
 		tab.push_back(p1);
 		tab.push_back(p2);
 		tab.push_back(p3);
 		tab.push_back(p4);
 		tab.push_back(p5);
+		tab.push_back(p6);
+		tab.push_back(p7);
+		tab.push_back(p8);
+		tab.push_back(p9);
+		tab.push_back(p10);
 		incremental_triangulation(tab);
 	}
 
@@ -366,8 +380,8 @@ namespace Mathlib
 		std::cout << "test du oriented angle : " << std::boolalpha << test_oriented_angle() << std::endl;
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
-		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
-		test_triangulation();
+		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;
+		test_triangulation();*/
 	}
 #pragma endregion
 }
