@@ -5,6 +5,17 @@
 
 
 namespace Utils {
+
+	struct edge {
+		glm::vec2 s1, s2;
+	};
+
+	struct triangle {
+		edge * a1;
+		edge * a2;
+		edge * a3;
+	};
+
 	//get the jarvis angle : arccos(pkpj.director_vec/||pkpj||.||director_vec||
 	float jarvis_angle(glm::vec2 director_vec, glm::vec2 pk_pj);
 	//get the oriented angle using determinant and jarvis angle
@@ -27,4 +38,7 @@ namespace Utils {
 	bool is_colinear(glm::vec2 a, glm::vec2 b);
 	//retourne les aretes visibles par point dans triangulation
 	std::vector<glm::vec2*> get_visible_edges(glm::vec2 point, std::vector<glm::vec2*> triangulation);
+	// Flipping d'arete
+	void edge_flipping(triangle * t1, triangle * t2);
+	bool check_delaunay_crit(edge * a);
 }

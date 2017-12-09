@@ -111,3 +111,43 @@ std::vector<glm::vec2*> Utils::get_visible_edges(glm::vec2 point, std::vector<gl
 	visible_edges.push_back(edge);
 	return visible_edges;
 }
+
+void Utils::edge_flipping(Utils::triangle * t1, Utils::triangle * t2) 
+{
+	std::list<edge*> ac;
+	ac.push_back(t1->a1);
+	ac.push_back(t1->a2);
+	ac.push_back(t1->a3);
+	ac.push_back(t1->a1);
+	ac.push_back(t1->a2);
+	ac.push_back(t1->a3);
+
+	while (ac.size() != 0) 
+	{
+		edge * tmp_edge = *ac.begin();
+		ac.erase(ac.begin());
+		if (!check_delaunay_crit(tmp_edge)) {
+			tmp_edge->s1 = t2->a2->s2;
+			tmp_edge->s2 = t1->a1->s2;
+
+			edge * a1, * a2, * a3, * a4;
+			a1 = t1->a2;
+			a2 = t2->a2;
+			a3 = t2->a3;
+			a4 = t1->a3;
+
+			t1->a1 = tmp_edge;
+			t1->a2 = a2;
+			t1->a3 = a1;
+
+			t2->a1 = tmp_edge;
+			t2->a2 = a4;
+			t2->a3 = a3;
+
+			ac.push_back(a1);
+			ac.push_back(a2);
+			ac.push_back(a3);
+			ac.push_back(a4);
+		}
+	}
+}

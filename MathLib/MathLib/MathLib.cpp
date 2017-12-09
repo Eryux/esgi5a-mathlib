@@ -79,6 +79,7 @@ namespace Mathlib
 		return (result_in_int);
 	}
 
+	// Test OK
 	int * graham_scan(float * points, int nb_point, int* out_size)
 	{
 		if (nb_point < 3) return nullptr;
