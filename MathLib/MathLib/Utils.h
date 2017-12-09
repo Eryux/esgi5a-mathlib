@@ -16,6 +16,7 @@ namespace Utils {
 		edge * a3;
 	};
 
+	float sign(float x);
 	//get the jarvis angle : arccos(pkpj.director_vec/||pkpj||.||director_vec||
 	float jarvis_angle(glm::vec2 director_vec, glm::vec2 pk_pj);
 	//get the oriented angle using determinant and jarvis angle
@@ -37,8 +38,16 @@ namespace Utils {
 	//check if two vectors are colinear
 	bool is_colinear(glm::vec2 a, glm::vec2 b);
 	//retourne les aretes visibles par point dans triangulation
-	std::vector<glm::vec2*> get_visible_edges(glm::vec2 point, std::vector<glm::vec2*> triangulation);
+	std::vector<edge*> get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<glm::vec2*> triangulation);
 	// Flipping d'arete
 	void edge_flipping(triangle * t1, triangle * t2);
 	bool check_delaunay_crit(edge * a);
+	//check si une arête est visible par un point
+	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<glm::vec2*> triangulation);
+	//retourne la liste des arêtes correspondant à mon nuage de points
+	std::list<edge*> get_convex_envelope(float* points, int nb_points);
+	//convertit un vector<glm::vec2> en point*
+	float* convert_from_vector(std::vector<glm::vec2> points);
+	//convertit un vector<glm::vec*> en point*
+	float* convert_from_triangulation(std::vector<glm::vec2*> triangulation);
 }
