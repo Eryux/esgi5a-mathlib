@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.IO;
 using UnityEngine;
 
 public class Mathlib : MonoBehaviour {
@@ -43,6 +44,9 @@ public class Mathlib : MonoBehaviour {
     [DllImport("MathLib_Unity", EntryPoint = "jarvis_walk")]
     static extern IntPtr jarvisWalk(IntPtr points, int size, IntPtr return_size);
 
+    [DllImport("MathLib_Unity", EntryPoint = "graham_scan")]
+    static extern IntPtr grahamScan(IntPtr points, int size, IntPtr return_size);
+
     // Use this for initialization
     void Start ()
     {
@@ -60,6 +64,9 @@ public class Mathlib : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.J))
             Action_JarvisWalk();
+
+        if (Input.GetKeyDown(KeyCode.G))
+            Action_GrahamScan();
 
         if (Input.GetKeyDown(KeyCode.Delete))
             ClearAllPoint();
@@ -121,6 +128,8 @@ public class Mathlib : MonoBehaviour {
             p[i * 2 + 1] = points[i].transform.position.z;
         }
 
+        SaveTestInputInFile(p);
+
         IntPtr raw_points = Marshal.AllocHGlobal(sizeof(float) * p.Length);
         Marshal.Copy(p, 0, raw_points, p.Length);
 
@@ -135,7 +144,7 @@ public class Mathlib : MonoBehaviour {
             int[] final_result = new int[result_size];
             Marshal.Copy(result, final_result, 0, result_size);
 
-            Debug.Log("Jarvis - Points : " + result_size);
+            Debug.Log("Jarvis - Points : " + (result_size / 2));
 
             for (int i = 0; i < points.Count; i++)
             {
@@ -153,6 +162,69 @@ public class Mathlib : MonoBehaviour {
         else
         {
             Debug.LogWarning("3 points are required for performing Jarvis walk.");
+        }
+    }
+
+    public void Action_GrahamScan()
+    {
+        float[] p = new float[points.Count * 2];
+        for (int i = 0; i < points.Count; i++)
+        {
+            p[i * 2] = points[i].transform.position.x;
+            p[i * 2 + 1] = points[i].transform.position.z;
+        }
+
+        SaveTestInputInFile(p);
+
+        IntPtr raw_points = Marshal.AllocHGlobal(sizeof(float) * p.Length);
+        Marshal.Copy(p, 0, raw_points, p.Length);
+
+        IntPtr return_size = Marshal.AllocHGlobal(sizeof(int));
+        IntPtr result = grahamScan(raw_points, p.Length / 2, return_size);
+        Marshal.FreeHGlobal(raw_points);
+
+        if (result != IntPtr.Zero)
+        {
+            int result_size = Marshal.ReadInt32(return_size);
+
+            int[] final_result = new int[result_size];
+            Marshal.Copy(result, final_result, 0, result_size);
+
+            Debug.Log("Graham Scan - Points : " + result_size);
+
+            for (int i = 0; i < points.Count; i++)
+            {
+                points[i].UnMark();
+            }
+
+            for (int i = 0; i < result_size; i++)
+            {
+                points[final_result[i]].Mark();
+            }
+
+            Marshal.FreeHGlobal(return_size);
+            Marshal.FreeHGlobal(result);
+        }
+        else
+        {
+            Debug.LogWarning("3 points are required for performing Graham scan.");
+        }
+    }
+
+    // ------------------------------------
+
+    void SaveTestInputInFile(float[] data)
+    {
+        if (File.Exists(Application.dataPath + "/test.txt"))
+        {
+            File.Create(Application.dataPath + "/text.txt");
+        }
+
+        using (StreamWriter file = new StreamWriter(Application.dataPath + "/test.txt", true))
+        {
+            string line = "";
+            for (int i = 0; i < data.Length; i++) { line += data[i].ToString("0.00") + "f, "; }
+            file.WriteLine(line);
         }
     }
 

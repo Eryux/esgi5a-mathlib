@@ -48,6 +48,7 @@ public class PointObject : MonoBehaviour {
     public void UnMark()
     {
         render.material = offMaterial;
+        marked = false;
     }
 
 }

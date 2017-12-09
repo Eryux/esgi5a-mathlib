@@ -50,10 +50,36 @@ glm::vec2 Utils::get_barycenter(std::vector<glm::vec2> point_list)
 
 std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 {
+	std::vector<glm::vec2*> tmp; for (int i = 0; i < points.size(); tmp.push_back(&points[i]), ++i);
 	std::list<int> result_list;
 
+	int minvec_index;
+	float minangle;
+
+	do {
+		for (int i = 0; i < tmp.size(); i++) {
+			if (tmp[i] == nullptr) continue;
+			minvec_index = i;
+			minangle = oriented_angle_2PI(glm::vec2(1, 0), get_vector_from_points(bary, points[i]));
+			break;
+		}
+
+		for (int i = 0; i < tmp.size(); i++)
+		{
+			if (tmp[i] == nullptr) continue;
+
+			float angle = oriented_angle_2PI(glm::vec2(1, 0), get_vector_from_points(bary, points[i]));
+			if (angle < minangle) {
+				minangle = angle;
+				minvec_index = i;
+			}
+		}
+		tmp[minvec_index] = nullptr;
+		result_list.push_back(minvec_index);
+	} while (result_list.size() != points.size());
+
 	//structure de comparaison sur l'angle entre Ox et le vecteur formé par bary et le point courant
-	struct Comparator{
+	/*struct Comparator{
 		Comparator(glm::vec2 barycenter) { this->barycenter = barycenter; }
 		glm::vec2 barycenter;
 		bool operator()(glm::vec2 a, glm::vec2 b) const
@@ -68,7 +94,7 @@ std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 
 	for (int i = 0; i < points.size(); i++) {
 		result_list.push_back(i);
-	}
+	}*/
 
 	return result_list;
 }

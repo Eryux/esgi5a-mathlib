@@ -90,11 +90,6 @@ namespace Mathlib
 		glm::vec2 barycenter = Utils::get_barycenter(v_points);
 
 		std::list<int> sorted_points = Utils::graham_sort(barycenter, v_points);
-
-		for (std::list<int>::iterator f_it = sorted_points.begin(); f_it != sorted_points.end(); ++f_it) {
-			std::cout << v_points[*f_it].x << "," << v_points[*f_it].y << std::endl;
-		}
-		
 		std::list<int>::iterator it = sorted_points.begin();
 
 		int start = *it;
@@ -204,7 +199,7 @@ namespace Mathlib
 		return ((2 * PI - Utils::oriented_angle(p1, p2)) - Utils::oriented_angle_2PI(p2, p1)) <0.0001f;
 	}*/
 
-	bool test_graham_sort() {
+	/*bool test_graham_sort() {
 		std::vector<glm::vec2> tab;
 		glm::vec2 p3(1, 1);	tab.push_back(p3);
 		glm::vec2 p1(3, 3);	tab.push_back(p1);
@@ -240,8 +235,8 @@ namespace Mathlib
 		std::cout << "test de la norme : " << std::boolalpha << test_norm() << std::endl;
 		std::cout << "test du get vector from points : " << std::boolalpha << test_vector_from_points() << std::endl;
 		std::cout << "test du oriented angle : " << std::boolalpha << test_oriented_angle() << std::endl;
-		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;*/
+		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
-	}
+	}*/
 }
 

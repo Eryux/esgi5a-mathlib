@@ -1,2 +1,6 @@
-﻿  MathLib_Unity.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib_Unity.dll
-  MathLib_Unity.vcxproj -> D:\ESGI\Maths\Avance\esgi5a-mathlib\MathLib\Debug\MathLib_Unity.pdb (Full PDB)
+﻿  dllmain.cpp
+  stdafx.cpp
+  MathLib_Unity.cpp
+  Generating Code...
+     Creating library C:\Users\Nicolas\Downloads\esgi5a-mathlib\MathLib\Debug\MathLib_Unity.lib and object C:\Users\Nicolas\Downloads\esgi5a-mathlib\MathLib\Debug\MathLib_Unity.exp
+  MathLib_Unity.vcxproj -> C:\Users\Nicolas\Downloads\esgi5a-mathlib\MathLib\Debug\MathLib_Unity.dll
