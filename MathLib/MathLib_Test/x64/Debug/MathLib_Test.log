@@ -1,4 +1,0 @@
-﻿  stdafx.cpp
-  MathLib_Test.cpp
-c:\users\nicolas\downloads\esgi5a-mathlib\mathlib\mathlib_test\mathlib_test.cpp(3): fatal error C1083: Cannot open include file: 'glm.hpp': No such file or directory
-  Generating Code...
