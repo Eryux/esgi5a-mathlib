@@ -123,8 +123,9 @@ namespace Mathlib
 			}
 			else {
 				if (it == sorted_points.begin()) {
-					it = sorted_points.end();
+					it = std::prev(sorted_points.end());
 					sorted_points.erase(sorted_points.begin());
+					start = *it;
 				}
 				else {
 					--it;

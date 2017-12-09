@@ -134,7 +134,9 @@ public class Mathlib : MonoBehaviour {
         Marshal.Copy(p, 0, raw_points, p.Length);
 
         IntPtr return_size = Marshal.AllocHGlobal(sizeof(int));
+        float timer = Time.time * 1000;
         IntPtr result = jarvisWalk(raw_points, p.Length / 2, return_size);
+        float elapsed_time = Time.time * 1000 - timer;
         Marshal.FreeHGlobal(raw_points);
 
         if (result != IntPtr.Zero)
@@ -144,7 +146,7 @@ public class Mathlib : MonoBehaviour {
             int[] final_result = new int[result_size];
             Marshal.Copy(result, final_result, 0, result_size);
 
-            Debug.Log("Jarvis - Points : " + (result_size / 2));
+            Debug.Log("Jarvis - Elapsed time : " + elapsed_time + " ms - Points : " + (result_size / 2));
 
             for (int i = 0; i < points.Count; i++)
             {
