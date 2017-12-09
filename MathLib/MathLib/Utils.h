@@ -19,6 +19,12 @@ namespace Utils {
 	glm::vec2 get_vector_from_points(glm::vec2 point1, glm::vec2 point2);
 	//returns the barycenter of an array of points
 	glm::vec2 get_barycenter(std::vector<glm::vec2> point_list);
+	//returns the dual-chained list sorted by the abscisse and then ordinate
+	std::list<glm::vec2> triangulate_sort(std::vector<glm::vec2> point);
 	//returns the dual-chained list sorted by the angle between Ox and the vector formed by bary and the points array
 	std::list<int> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
+	//check if two vectors are colinear
+	bool is_colinear(glm::vec2 a, glm::vec2 b);
+	//retourne les aretes visibles par point dans triangulation
+	std::vector<glm::vec2*> get_visible_edges(glm::vec2 point, std::vector<glm::vec2*> triangulation);
 }

@@ -98,3 +98,16 @@ std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 
 	return result_list;
 }
+
+bool Utils::is_colinear(glm::vec2 a, glm::vec2 b) {
+	if (a.x == 0.0f || b.x == 0.0f) return (b.x == 0.0f && a.x == 0.0f);
+	if (a.y == 0.0f || b.y == 0.0f) return (b.y == 0.0f && a.y == 0.0f);
+	return a.x / b.x - a.y / b.y < 0.001f;
+}
+
+std::vector<glm::vec2*> Utils::get_visible_edges(glm::vec2 point, std::vector<glm::vec2*> triangulation) {
+	std::vector<glm::vec2*> visible_edges;
+	glm::vec2* edge = new glm::vec2[2]();
+	visible_edges.push_back(edge);
+	return visible_edges;
+}
