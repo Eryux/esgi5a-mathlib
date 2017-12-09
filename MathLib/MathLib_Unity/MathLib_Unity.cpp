@@ -5,6 +5,8 @@ typedef int(_cdecl * dll_mathlib_classic_pow_ptr)(int, int);
 
 typedef int * (_cdecl * dll_mathlib_jarvis_walk_ptr)(float *, int, int*);
 
+typedef int * (_cdecl * dll_mathlib_graham_scan_ptr)(float *, int, int*);
+
 HINSTANCE hGetProcIDDL;
 
 extern "C"
@@ -12,6 +14,8 @@ extern "C"
 	__declspec(dllexport) int classic_pow(int, int);
 
 	__declspec(dllexport) int * jarvis_walk(float *, int, int*);
+
+	__declspec(dllexport) int * graham_scan(float *, int, int*);
 }
 
 void LoadDLL()
@@ -57,6 +61,21 @@ int * jarvis_walk(float * p, int s, int* o)
 	dll_mathlib_jarvis_walk_ptr f = (dll_mathlib_jarvis_walk_ptr)GetProcAddress(hGetProcIDDL, "jarvis_walk");
 	if (!f) {
 		std::cerr << "Could not find function jarvis_walk in MathLib.dll" << std::endl;
+		return nullptr;
+	}
+
+	int * result = f(p, s, o);
+	freeDLL();
+	return result;
+}
+
+int * graham_scan(float * p, int s, int* o) 
+{
+	LoadDLL();
+
+	dll_mathlib_graham_scan_ptr f = (dll_mathlib_graham_scan_ptr)GetProcAddress(hGetProcIDDL, "graham_scan");
+	if (!f) {
+		std::cerr << "Could not find function graham_scan in Mathlib.dll" << std::endl;
 		return nullptr;
 	}
 

@@ -8,6 +8,10 @@ public class MoveCameraWithArrow : MonoBehaviour {
     [Range(0f,100f)]
     float moveSpeed = 2f;
 
+    [SerializeField]
+    [Range(0f, 100f)]
+    float zoomSpeed = 2f;
+
 	void FixedUpdate()
     {
         if (Input.GetKey(KeyCode.RightArrow))
@@ -26,6 +30,16 @@ public class MoveCameraWithArrow : MonoBehaviour {
         else if (Input.GetKey(KeyCode.UpArrow))
         {
             transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + moveSpeed * Time.deltaTime);
+        }
+
+        if (Input.GetAxis("Mouse ScrollWheel") > 0f)
+        {
+            if (Camera.main.orthographicSize > 1.0f)
+                Camera.main.orthographicSize -= zoomSpeed * Time.deltaTime;
+        }
+        else if (Input.GetAxis("Mouse ScrollWheel") < 0f)
+        {
+            Camera.main.orthographicSize += zoomSpeed * Time.deltaTime;
         }
     }
 }

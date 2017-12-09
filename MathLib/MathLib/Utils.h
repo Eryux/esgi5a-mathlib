@@ -29,7 +29,7 @@ namespace Utils {
 	//returns the dual-chained list sorted by the abscisse and then ordinate
 	std::list<glm::vec2> triangulate_sort(std::vector<glm::vec2> point);
 	//returns the dual-chained list sorted by the angle between Ox and the vector formed by bary and the points array
-	std::list<glm::vec2> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
+	std::list<int> graham_sort(glm::vec2 bary, std::vector<glm::vec2> points);
 	//check if two vectors are colinear
 	bool is_colinear(glm::vec2 a, glm::vec2 b);
 	//retourne les aretes visibles par point dans triangulation

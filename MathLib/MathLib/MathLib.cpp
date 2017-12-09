@@ -79,6 +79,78 @@ namespace Mathlib
 		return (result_in_int);
 	}
 
+	int * graham_scan(float * points, int nb_point, int* out_size)
+	{
+		if (nb_point < 3) return nullptr;
+
+		std::vector<glm::vec2> v_points;
+		for (int i = 0; i < nb_point; i++) {
+			v_points.push_back(glm::vec2(points[i * 2], points[i * 2+ 1]));
+		}
+
+		glm::vec2 barycenter = Utils::get_barycenter(v_points);
+
+		std::list<int> sorted_points = Utils::graham_sort(barycenter, v_points);
+		std::list<int>::iterator it = sorted_points.begin();
+
+		int start = *it;
+		int pivot = start;
+		bool forward = false;
+
+		do {
+			glm::vec2 prev, next;
+			if (it == sorted_points.begin()) {
+				prev = Utils::get_vector_from_points(v_points[pivot], v_points[*std::prev(sorted_points.end())]);
+				next = Utils::get_vector_from_points(v_points[pivot], v_points[*std::next(it)]);
+			}
+			else if (it == std::prev(sorted_points.end())) {
+				prev = Utils::get_vector_from_points(v_points[pivot], v_points[*std::prev(it)]);
+				next = Utils::get_vector_from_points(v_points[pivot], v_points[*sorted_points.begin()]);
+			}
+			else {
+				prev = Utils::get_vector_from_points(v_points[pivot], v_points[*std::prev(it)]);
+				next = Utils::get_vector_from_points(v_points[pivot], v_points[*std::next(it)]);
+			}
+
+			float angle = Utils::oriented_angle_2PI(prev, next);
+			if (angle > PI) {
+				if (it == std::prev(sorted_points.end()))
+					it = sorted_points.begin();
+				else
+					++it;
+
+				forward = true;
+			}
+			else {
+				if (it == sorted_points.begin()) {
+					it = std::prev(sorted_points.end());
+					sorted_points.erase(sorted_points.begin());
+					start = *it;
+				}
+				else {
+					--it;
+					sorted_points.erase(std::next(it));
+				}
+
+				forward = false;
+			}
+
+			if (it != sorted_points.end())
+				pivot = *it;
+
+		} while (pivot != start || forward == false);
+
+		*out_size = sorted_points.size();
+
+		int * result_in_int = new int[sorted_points.size()]();
+		int i = 0;
+		for (std::list<int>::iterator f_it = sorted_points.begin(); f_it != sorted_points.end(); ++f_it) {
+			result_in_int[i] = *f_it;
+			i++;
+		}
+		return result_in_int;
+	}
+
 	float* incremental_triangulation(std::vector<glm::vec2> points) {
 		//poly page 26
 		std::vector<glm::vec2*> triangulation;
@@ -220,7 +292,7 @@ namespace Mathlib
 		return ((2 * PI - Utils::oriented_angle(p1, p2)) - Utils::oriented_angle_2PI(p2, p1)) <0.0001f;
 	}
 
-	bool test_graham_sort() {
+	/*bool test_graham_sort() {
 		std::vector<glm::vec2> tab;
 		glm::vec2 p3(1, 1);	tab.push_back(p3);
 		glm::vec2 p1(3, 3);	tab.push_back(p1);
@@ -232,6 +304,7 @@ namespace Mathlib
 			std::cout << "probleme graham sort : barycentre" << std::endl;
 			return false;
 		}
+
 		std::list<glm::vec2> result;
 		result.push_back(p1);
 		result.push_back(p2);
@@ -242,27 +315,23 @@ namespace Mathlib
 		int count = debug_results.size();
 		if (result != calculated_result) {
 			for (int i = 0; i < count; i++) {
-				std::cout << "x : " << debug_results.front().x << " | y: " << debug_results.front().y << std::endl;
+				std::cout << "x : " << debug_results.front() << " | y: " << debug_results.front() << std::endl;
 				debug_results.pop_front();
 			}
 			return false;
 		}
-	}
+	}*/
 
-	MATHLIB_API void test()
-	{
-		std::cout << "test du barycentre : " << std::boolalpha << test_barycenter() << std::endl;
+	MATHLIB_API void test()	{
+		/*std::cout << "test du barycentre : " << std::boolalpha << test_barycenter() << std::endl;
 		std::cout << "test du produit scalaire : " << std::boolalpha << test_scalar_product() << std::endl;
 		std::cout << "test de la norme : " << std::boolalpha << test_norm() << std::endl;
 		std::cout << "test du get vector from points : " << std::boolalpha << test_vector_from_points() << std::endl;
 		std::cout << "test du oriented angle : " << std::boolalpha << test_oriented_angle() << std::endl;
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
-		//std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;
-
+		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
 	}
 #pragma endregion
 
-	
-}
 
