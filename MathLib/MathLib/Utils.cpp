@@ -1,5 +1,6 @@
 #include "Utils.h"
 #include <math.h>
+#include <stack>
 #include <array>
 #include "MathLib.h";
 #define PI 3.14159265359
@@ -147,44 +148,50 @@ std::vector<Utils::edge*> Utils::get_visible_edges(glm::vec2 point, std::list<ed
 }
 
 
-void Utils::edge_flipping(Utils::triangle * t1, Utils::triangle * t2) 
+void Utils::edge_flipping(std::vector<edge*> edges)
 {
-	std::list<edge*> ac;
-	ac.push_back(t1->a1);
-	ac.push_back(t1->a2);
-	ac.push_back(t1->a3);
-	ac.push_back(t1->a1);
-	ac.push_back(t1->a2);
-	ac.push_back(t1->a3);
+	std::stack<edge*> ac;
+	for (int i = 0; i < edges.size(); i++) { if (edges[i]->t2 != nullptr) ac.push(edges[i]); }
 
-	while (ac.size() != 0) 
+	while ( ! ac.empty()) 
 	{
-		edge * tmp_edge = *ac.begin();
-		ac.erase(ac.begin());
+		edge * tmp_edge = ac.top();
+		ac.pop();
+
 		if (!check_delaunay_crit(tmp_edge)) {
-			tmp_edge->s1 = t2->a2->s2;
-			tmp_edge->s2 = t1->a1->s2;
-
 			edge * a1, * a2, * a3, * a4;
-			a1 = t1->a2;
-			a2 = t2->a2;
-			a3 = t2->a3;
-			a4 = t1->a3;
+			a1 = tmp_edge->t1->a2;
+			a2 = tmp_edge->t2->a2;
+			a3 = tmp_edge->t2->a3;
+			a4 = tmp_edge->t1->a3;
 
-			t1->a1 = tmp_edge;
-			t1->a2 = a2;
-			t1->a3 = a1;
+			tmp_edge->t2->a2->t1 = tmp_edge->t1;
+			tmp_edge->t1->a3->t1 = tmp_edge->t2;
 
-			t2->a1 = tmp_edge;
-			t2->a2 = a4;
-			t2->a3 = a3;
+			tmp_edge->t1->a1 = tmp_edge;
+			tmp_edge->t1->a2 = a2;
+			tmp_edge->t1->a3 = a1;
 
-			ac.push_back(a1);
-			ac.push_back(a2);
-			ac.push_back(a3);
-			ac.push_back(a4);
+			tmp_edge->t2->a1 = tmp_edge;
+			tmp_edge->t2->a2 = a4;
+			tmp_edge->t2->a3 = a3;
+
+			ac.push(a1);
+			ac.push(a2);
+			ac.push(a3);
+			ac.push(a4);
 		}
 	}
+}
+
+bool Utils::check_delaunay_crit(Utils::edge * a)
+{
+	triangle * t1 = a->t1;
+	triangle * t2 = a->t2;
+	Utils::cercle c = get_circumscribed_circle(t1);
+	glm::vec2 vector1 = Utils::get_vector_from_points(c.c, t1->a2->s2);
+	glm::vec2 vector2 = Utils::get_vector_from_points(c.c, t2->a2->s2);
+	return Utils::norm(vector1) > c.r && Utils::norm(vector2) > c.r;
 }
 
 bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<Utils::edge*> edge_list)

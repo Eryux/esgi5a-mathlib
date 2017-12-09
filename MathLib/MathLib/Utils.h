@@ -54,8 +54,10 @@ namespace Utils {
 	//retourne les aretes visibles par point dans triangulation
 	std::vector<edge*> get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<edge*> edge_list);
 	// Flipping d'arete
-	void edge_flipping(triangle * t1, triangle * t2);
+	void edge_flipping(std::vector<edge*> edges);
 	bool check_delaunay_crit(edge * a);
+	// Cercle circonscrit
+	cercle get_circumscribed_circle(triangle * triangle);
 	//check si une arête est visible par un point
 	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<Utils::edge*> edge_list);
 	//retourne la liste des arêtes correspondant à mon nuage de points

@@ -354,5 +354,3 @@ namespace Mathlib
 		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
 	}
 #pragma endregion
-
-
