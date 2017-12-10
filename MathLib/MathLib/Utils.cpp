@@ -2,7 +2,9 @@
 #include <math.h>
 #include <stack>
 #include <array>
-#include "MathLib.h";
+#include "MathLib.h"
+#include <iostream>
+#include <ostream>
 #define PI 3.14159265359
 
 float Utils::sign(float x)
@@ -262,11 +264,69 @@ float * Utils::convert_from_vector(std::vector<glm::vec2> points)
 }*/
 
 Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
+	//premier milieu
 	glm::vec2 a1s1 = triangle->a1->s1;
 	glm::vec2 a1s2 = triangle->a1->s2;
-	glm::vec2 middle1 = glm::vec2((a1s1.x + a1s2.x) / 2, (triangle->a1->s1.y + triangle->a1->s2.y) / 2);
+	glm::vec2 middle1 = glm::vec2((a1s1.x + a1s2.x) / 2, (a1s1.y + a1s2.y) / 2);
+	float p1, m1, x1;
+	bool straight1 = false;
+	if (abs(a1s2.y - a1s1.y) > 0.001) {//cas y = mx+p
+		m1 = (a1s2.x - a1s1.x) / (a1s2.y - a1s1.y); //TODO check!=milieu
+		p1 = middle1.y - m1*middle1.x;
+		// on a -m1 x + y - p1 = 0
+	}
+	else {//cas x=c
+		straight1 = true;
+		x1 = middle1.x;
+	}
 
-	glm::vec2 middle2 = glm::vec2((triangle->a2->s1.x + triangle->a2->s2.x) / 2, (triangle->a2->s1.y + triangle->a2->s2.y) / 2);
-	return cercle();
+	//second milieu
+	glm::vec2 a2s1 = triangle->a2->s1;
+	glm::vec2 a2s2 = triangle->a2->s2;
+	glm::vec2 middle2 = glm::vec2((a2s1.x + a2s2.x) / 2, (a2s1.y + a2s2.y) / 2);
+	float p2, m2, x2;
+	bool straight2 = false;
+	if (abs(a2s2.y - a2s1.y) > 0.001) {
+		m2 = (a2s2.x - a2s1.x) / (a2s2.y - a2s1.y); //TODO check!=0
+		p2 = middle2.y - m2*middle2.x;
+		// on a -m2 x + y - p2 = 0
+	}
+	else {//cas x=c
+		straight2 = true;
+		x2 = middle2.x;
+	}
+
+	//resolution de l'intersection
+	glm::vec2 center;
+	if (straight1) {
+		if (straight2) {
+			std::cerr << "triangle plat" << std::endl;
+			return cercle();
+		}
+		center.x = x1;
+		center.y = m2 * x1 + p2;
+	}
+
+	if (straight2) {
+		center.x = x2;
+		center.y = m1 * x2 + p1;
+	}
+
+	// { -m1 x + y = p1
+	// { -m2 x + y = p2
+	if (!straight1 && !straight2) {
+		float det = m2 - m1;
+		if (det == 0) {
+			std::cerr << "triangle plat" << std::endl;
+			return cercle();
+		}
+		center.x = (p2 - p1) / det;
+		center.y = (p1*m2 - p2 * m1) / det;
+	}
+	float radius = Utils::norm(Utils::get_vector_from_points(center, a1s1));
+
+
+
+	return cercle(center, radius);
 }
 

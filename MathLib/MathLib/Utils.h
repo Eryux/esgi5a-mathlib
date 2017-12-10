@@ -27,6 +27,8 @@ namespace Utils {
 	};
 
 	struct cercle {
+		cercle(glm::vec2 c, float r) { this->c = c; this->r = r; };
+		cercle() {};
 		float r;
 		glm::vec2 c;
 	};
