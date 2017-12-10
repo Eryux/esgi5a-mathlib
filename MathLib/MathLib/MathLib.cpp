@@ -21,6 +21,8 @@ namespace Mathlib
 		a = 5;
 	}
 
+	// ------------------------------------------
+
 	// Test OK
 	int * jarvis_walk(float * points, int nb_point, int * out_size)
 	{
@@ -78,6 +80,8 @@ namespace Mathlib
 		for (int i = 0; i < *out_size; result_in_int[i] = result[i], i++);
 		return (result_in_int);
 	}
+
+	// ------------------------------------------
 
 	// Test OK
 	int * graham_scan(float * points, int nb_point, int* out_size)
@@ -151,6 +155,8 @@ namespace Mathlib
 		}
 		return result_in_int;
 	}
+
+	// ------------------------------------------
 
 	Utils::triangulation* incremental_triangulation(std::vector<glm::vec2> points) {
 		//poly page 26
@@ -239,6 +245,34 @@ namespace Mathlib
 		triangulation->triangle_list = triangle_list;
 		return triangulation;
 		//(où les 6 premiers floats sont p1x, p1y, p2x, p2y, p3x, p3y) avec p1p2p3 le premier triangle 
+	}
+
+	// ------------------------------------------
+
+	float * triangulate(float * points, int nb_point, int * out_size) 
+	{
+		std::vector<glm::vec2> vec_points;
+		for (int i = 0; i < nb_point; i++) { vec_points.push_back(glm::vec2(points[i * 2], points[i * 2 + 1])); }
+
+		Utils::triangulation * t = incremental_triangulation(vec_points);
+
+		std::vector<float> result;
+		for (int i = 0; i < t->triangle_list.size(); i++) {
+			result.push_back(t->triangle_list[i]->a1->s1.x);
+			result.push_back(t->triangle_list[i]->a1->s1.y);
+			result.push_back(t->triangle_list[i]->a2->s1.x);
+			result.push_back(t->triangle_list[i]->a2->s1.y);
+			result.push_back(t->triangle_list[i]->a3->s1.x);
+			result.push_back(t->triangle_list[i]->a3->s1.y);
+		}
+
+		*out_size = result.size();
+
+		float * result_in_float = new float[*out_size]();
+		for (int i = 0; i < *out_size; i++) { result_in_float[i] = result[i]; }
+		delete t;
+
+		return result_in_float;
 	}
 
 #pragma region tests
@@ -372,6 +406,26 @@ namespace Mathlib
 		}
 	}*/
 
+	void test_flipping() 
+	{
+		glm::vec2 p1(0, 1);
+		glm::vec2 p2(0, -1);
+		glm::vec2 p3(1, 0);
+		glm::vec2 p4(-1, 0);
+		std::vector<glm::vec2> tab;
+		tab.push_back(p1);
+		tab.push_back(p2);
+		tab.push_back(p3);
+		tab.push_back(p4);
+		Utils::triangulation * t = incremental_triangulation(tab);
+
+		std::cout << "Number of edge : " << t->edge_list.size() << " - Number of triangle : " << t->triangle_list.size() << std::endl;
+		for (int i = 0; i < t->edge_list.size(); i++) {
+			std::cout << "Edge " << i << " : " << (t->edge_list[i]->s1.x) << "," << (t->edge_list[i]->s1.y) << " - " << (t->edge_list[i]->s2.x) << "," << (t->edge_list[i]->s2.y) << std::endl;
+		}
+		Utils::edge_flipping(t->edge_list);
+	}
+
 	MATHLIB_API void test() {
 		/*std::cout << "test du barycentre : " << std::boolalpha << test_barycenter() << std::endl;
 		std::cout << "test du produit scalaire : " << std::boolalpha << test_scalar_product() << std::endl;
@@ -380,8 +434,9 @@ namespace Mathlib
 		std::cout << "test du oriented angle : " << std::boolalpha << test_oriented_angle() << std::endl;
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
-		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;
-		test_triangulation();*/
+		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
+		//test_triangulation();
+		test_flipping();
 	}
 #pragma endregion
 }
