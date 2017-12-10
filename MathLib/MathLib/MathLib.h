@@ -8,7 +8,11 @@
 
 #include "glm.hpp"
 
+#include "Utils.h"
+
 namespace Mathlib {
+
+	Utils::triangulation* incremental_triangulation(std::vector<glm::vec2> points);
 
 	extern "C" 
 	{
@@ -19,6 +23,8 @@ namespace Mathlib {
 		MATHLIB_API int * jarvis_walk(float * points, int nb_point, int* out_size);
 
 		MATHLIB_API int * graham_scan(float * points, int nb_point, int* out_size);
+
+		MATHLIB_API float * triangulate(float * points, int nb_point, int * out_size);
 	}
 
 }
