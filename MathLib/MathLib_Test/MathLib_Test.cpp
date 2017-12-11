@@ -10,8 +10,8 @@ int main()
 {
 	//Mathlib::test();
 	
-	float points[] = { -4.02f, 3.78f, -5.70f, -1.96f, 5.85f, -4.30f, 7.20f, 4.63f, 0.40f, 0.27f, 6.84f, -1.92f, 1.32f, -4.81f, -1.97f, -5.87f, -3.22f, 1.12f, 6.58f, -0.09f, 3.14f, 3.24f, 1.68f, -0.86f, 3.47f, -4.88f, -6.11f, -4.55f, -6.98f, 1.74f, -0.99f, 5.54f, 4.10f, 6.20f, 7.57f, 2.29f, 11.01f, -1.33f };
-	int size = 38;
+	float points[] = { 4.56f, -0.21f, 4.56f, 0.26f, 2.81f, 3.67f, -0.60f, 4.53f, -5.23f, 0.68f, -3.54f, -4.40f, 3.26f, -6.15f, 3.39f, -3.28f, -1.95f, -0.60f, -1.07f, 1.74f, 0.21f, -4.35f, -3.39f, -2.08f, -4.66f, -6.12f, -0.42f, -8.23f, 6.46f, -8.23f, 3.18f, -2.99f, 2.58f, -0.16f, 7.55f, -2.60f, 9.61f, 1.07f, 5.16f, 2.94f, 3.23f, 5.31f, 4.22f, 4.35f, -1.35f, 5.76f, -5.26f, 4.43f, -4.84f, 0.31f, -2.89f, 2.55f, 8.44f, 3.13f, 6.43f, 1.88f, 2.68f, 1.59f };
+	int size = 58;
 
 	//float points[] = { 0.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f };
 	//int size = 8;
@@ -55,7 +55,7 @@ int main()
 		std::cout << rt[i + 4] << "," << rt[i + 5] << std::endl;
 	}
 
-	std::cout << "Triangulation Delaunay -------------------" << std::endl;
+	/*std::cout << "Triangulation Delaunay -------------------" << std::endl;
 
 	p_result = new int(0);
 	rt = Mathlib::triangulate_delaunay(points, size / 2, p_result);
@@ -66,7 +66,7 @@ int main()
 		std::cout << rt[i] << "," << rt[i + 1] << " - ";
 		std::cout << rt[i + 2] << "," << rt[i + 3] << " - ";
 		std::cout << rt[i + 4] << "," << rt[i + 5] << std::endl;
-	}
+	}*/
 
 	std::cout << "FIN -------------------" << std::endl;
 	
