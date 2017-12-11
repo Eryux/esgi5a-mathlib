@@ -44,6 +44,9 @@ public class Mathlib : MonoBehaviour {
 
     [SerializeField]
     Toggle drawVoronoi;
+
+    [SerializeField]
+    Text elapsedTime;
     
     public List<PointObject> points;
 
@@ -148,6 +151,7 @@ public class Mathlib : MonoBehaviour {
     {
         if (points.Count < 3) return;
 
+        float timer = Time.realtimeSinceStartup * 1000;
         if (convexeMethodSelect.value == 1)
         {
             Action_JarvisWalk();
@@ -170,6 +174,9 @@ public class Mathlib : MonoBehaviour {
         {
             // Draw voronoi
         }
+
+        float elapsed = Time.realtimeSinceStartup * 1000 - timer;
+        elapsedTime.text = elapsed.ToString("0000") + " ms";
     }
 
     // ------------------------------------
@@ -188,9 +195,9 @@ public class Mathlib : MonoBehaviour {
         Marshal.Copy(p, 0, raw_points, p.Length);
 
         IntPtr return_size = Marshal.AllocHGlobal(sizeof(int));
-        float timer = Time.time * 1000;
+        float timer = Time.realtimeSinceStartup * 1000;
         IntPtr result = jarvisWalk(raw_points, p.Length / 2, return_size);
-        float elapsed_time = Time.time * 1000 - timer;
+        float elapsed_time = Time.realtimeSinceStartup * 1000 - timer;
         Marshal.FreeHGlobal(raw_points);
 
         if (result != IntPtr.Zero)
@@ -357,9 +364,9 @@ public class Mathlib : MonoBehaviour {
 
     void SaveTestInputInFile(float[] data)
     {
-        /*if (File.Exists(Application.dataPath + "/test.txt"))
+        if (File.Exists(Application.dataPath + "/test.txt"))
         {
-            File.Create(Application.dataPath + "/text.txt");
+            File.Delete(Application.dataPath + "/test.txt");
         }
 
         using (StreamWriter file = new StreamWriter(Application.dataPath + "/test.txt", true))
@@ -368,7 +375,7 @@ public class Mathlib : MonoBehaviour {
             for (int i = 0; i < data.Length; i++) { line += data[i].ToString("0.00") + "f, "; }
             file.WriteLine(line);
             file.Close();
-        }*/
+        }
     }
 
     // ------------------------------------
