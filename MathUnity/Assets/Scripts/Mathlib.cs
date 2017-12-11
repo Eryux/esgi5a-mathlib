@@ -31,6 +31,9 @@ public class Mathlib : MonoBehaviour {
 
     [SerializeField]
     Transform pointsWrapper;
+
+    [SerializeField]
+    MeshCreator meshCreate;
     
     public List<PointObject> points;
 
@@ -46,6 +49,12 @@ public class Mathlib : MonoBehaviour {
 
     [DllImport("MathLib_Unity", EntryPoint = "graham_scan")]
     static extern IntPtr grahamScan(IntPtr points, int size, IntPtr return_size);
+
+    [DllImport("MathLib_Unity", EntryPoint = "triangulate")]
+    static extern IntPtr triangulate(IntPtr points, int size, IntPtr return_size);
+
+    [DllImport("MathLib_Unity", EntryPoint = "triangulate_delaunay")]
+    static extern IntPtr triangulateDelaunay(IntPtr points, int size, IntPtr return_size);
 
     // Use this for initialization
     void Start ()
@@ -67,6 +76,12 @@ public class Mathlib : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.G))
             Action_GrahamScan();
+
+        if (Input.GetKeyDown(KeyCode.T))
+            Action_Triangulate();
+
+        if (Input.GetKeyDown(KeyCode.D))
+            Action_TriangulateDelaunay();
 
         if (Input.GetKeyDown(KeyCode.Delete))
             ClearAllPoint();
@@ -213,11 +228,97 @@ public class Mathlib : MonoBehaviour {
         }
     }
 
+    public void Action_Triangulate()
+    {
+        float[] p = new float[points.Count * 2];
+        for (int i = 0; i < points.Count; i++)
+        {
+            p[i * 2] = points[i].transform.position.x;
+            p[i * 2 + 1] = points[i].transform.position.z;
+        }
+
+        SaveTestInputInFile(p);
+
+        IntPtr raw_points = Marshal.AllocHGlobal(sizeof(float) * p.Length);
+        Marshal.Copy(p, 0, raw_points, p.Length);
+
+        IntPtr return_size = Marshal.AllocHGlobal(sizeof(int));
+        IntPtr result = triangulate(raw_points, p.Length / 2, return_size);
+        Marshal.FreeHGlobal(raw_points);
+
+        if (result != IntPtr.Zero)
+        {
+            int result_size = Marshal.ReadInt32(return_size);
+
+            float[] final_result = new float[result_size];
+            Marshal.Copy(result, final_result, 0, result_size);
+
+            Debug.Log("Triangulate - Points : " + result_size / 2 + " - Triangle : " + result_size / 6);
+
+            for (int i = 0; i < result_size; i += 6)
+            {
+                Debug.Log("Triangle " + i / 6 + " : " + final_result[i] + "," + final_result[i + 1] + " - " + final_result[i + 2] + "," + final_result[i + 3] + " - " + final_result[i + 4] + "," + final_result[i + 5]);
+            }
+
+            meshCreate.Create2D(final_result);
+
+            Marshal.FreeHGlobal(return_size);
+            Marshal.FreeHGlobal(result);
+        }
+        else
+        {
+            Debug.LogWarning("3 points are required for performing triangulation.");
+        }
+    }
+
+    public void Action_TriangulateDelaunay()
+    {
+        float[] p = new float[points.Count * 2];
+        for (int i = 0; i < points.Count; i++)
+        {
+            p[i * 2] = points[i].transform.position.x;
+            p[i * 2 + 1] = points[i].transform.position.z;
+        }
+
+        SaveTestInputInFile(p);
+
+        IntPtr raw_points = Marshal.AllocHGlobal(sizeof(float) * p.Length);
+        Marshal.Copy(p, 0, raw_points, p.Length);
+
+        IntPtr return_size = Marshal.AllocHGlobal(sizeof(int));
+        IntPtr result = triangulateDelaunay(raw_points, p.Length / 2, return_size);
+        Marshal.FreeHGlobal(raw_points);
+
+        if (result != IntPtr.Zero)
+        {
+            int result_size = Marshal.ReadInt32(return_size);
+
+            float[] final_result = new float[result_size];
+            Marshal.Copy(result, final_result, 0, result_size);
+
+            Debug.Log("Triangulate - Points : " + result_size / 2 + " - Triangle : " + result_size / 6);
+
+            for (int i = 0; i < result_size; i += 6)
+            {
+                Debug.Log("Triangle " + i / 6 + " : " + final_result[i] + "," + final_result[i + 1] + " - " + final_result[i + 2] + "," + final_result[i + 3] + " - " + final_result[i + 4] + "," + final_result[i + 5]);
+            }
+
+            meshCreate.Create2D(final_result);
+
+            Marshal.FreeHGlobal(return_size);
+            Marshal.FreeHGlobal(result);
+        }
+        else
+        {
+            Debug.LogWarning("3 points are required for performing triangulation.");
+        }
+    }
+
     // ------------------------------------
 
     void SaveTestInputInFile(float[] data)
     {
-        if (File.Exists(Application.dataPath + "/test.txt"))
+        /*if (File.Exists(Application.dataPath + "/test.txt"))
         {
             File.Create(Application.dataPath + "/text.txt");
         }
@@ -227,7 +328,8 @@ public class Mathlib : MonoBehaviour {
             string line = "";
             for (int i = 0; i < data.Length; i++) { line += data[i].ToString("0.00") + "f, "; }
             file.WriteLine(line);
-        }
+            file.Close();
+        }*/
     }
 
     // ------------------------------------
@@ -248,6 +350,8 @@ public class Mathlib : MonoBehaviour {
 
     public void ClearAllPoint()
     {
+        meshCreate.Reset();
+
         foreach (var pobject in points) {
             Destroy(pobject.gameObject);
         }

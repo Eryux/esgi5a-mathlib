@@ -55,6 +55,19 @@ int main()
 		std::cout << rt[i + 4] << "," << rt[i + 5] << std::endl;
 	}
 
+	std::cout << "Triangulation Delaunay -------------------" << std::endl;
+
+	p_result = new int(0);
+	rt = Mathlib::triangulate_delaunay(points, size / 2, p_result);
+
+	std::cout << "NB Point : " << *p_result / 2 << std::endl;
+	for (int i = 0; i < *p_result; i += 6) {
+		std::cout << "Triangle " << i / 6 << " : ";
+		std::cout << rt[i] << "," << rt[i + 1] << " - ";
+		std::cout << rt[i + 2] << "," << rt[i + 3] << " - ";
+		std::cout << rt[i + 4] << "," << rt[i + 5] << std::endl;
+	}
+
 	std::cout << "FIN -------------------" << std::endl;
 	
 	int quit = 0;

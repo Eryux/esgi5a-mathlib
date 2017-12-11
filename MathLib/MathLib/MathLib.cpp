@@ -260,10 +260,10 @@ namespace Mathlib
 		for (int i = 0; i < t->triangle_list.size(); i++) {
 			result.push_back(t->triangle_list[i]->a1->s1.x);
 			result.push_back(t->triangle_list[i]->a1->s1.y);
-			result.push_back(t->triangle_list[i]->a2->s1.x);
-			result.push_back(t->triangle_list[i]->a2->s1.y);
-			result.push_back(t->triangle_list[i]->a3->s1.x);
-			result.push_back(t->triangle_list[i]->a3->s1.y);
+			result.push_back(t->triangle_list[i]->a1->s2.x);
+			result.push_back(t->triangle_list[i]->a1->s2.y);
+			result.push_back(t->triangle_list[i]->a2->s2.x);
+			result.push_back(t->triangle_list[i]->a2->s2.y);
 		}
 
 		*out_size = result.size();
@@ -274,6 +274,37 @@ namespace Mathlib
 
 		return result_in_float;
 	}
+
+	// ------------------------------------------
+
+	float * triangulate_delaunay(float * points, int nb_point, int * out_size)
+	{
+		std::vector<glm::vec2> vec_points;
+		for (int i = 0; i < nb_point; i++) { vec_points.push_back(glm::vec2(points[i * 2], points[i * 2 + 1])); }
+
+		Utils::triangulation * t = incremental_triangulation(vec_points);
+		Utils::edge_flipping(t->edge_list);
+
+		std::vector<float> result;
+		for (int i = 0; i < t->triangle_list.size(); i++) {
+			result.push_back(t->triangle_list[i]->a1->s1.x);
+			result.push_back(t->triangle_list[i]->a1->s1.y);
+			result.push_back(t->triangle_list[i]->a1->s2.x);
+			result.push_back(t->triangle_list[i]->a1->s2.y);
+			result.push_back(t->triangle_list[i]->a2->s2.x);
+			result.push_back(t->triangle_list[i]->a2->s2.y);
+		}
+
+		*out_size = result.size();
+
+		float * result_in_float = new float[*out_size]();
+		for (int i = 0; i < *out_size; i++) { result_in_float[i] = result[i]; }
+		delete t;
+
+		return result_in_float;
+	}
+
+	// ------------------------------------------
 
 #pragma region tests
 
@@ -423,7 +454,13 @@ namespace Mathlib
 		for (int i = 0; i < t->edge_list.size(); i++) {
 			std::cout << "Edge " << i << " : " << (t->edge_list[i]->s1.x) << "," << (t->edge_list[i]->s1.y) << " - " << (t->edge_list[i]->s2.x) << "," << (t->edge_list[i]->s2.y) << std::endl;
 		}
+
 		Utils::edge_flipping(t->edge_list);
+
+		std::cout << "Number of edge : " << t->edge_list.size() << " - Number of triangle : " << t->triangle_list.size() << std::endl;
+		for (int i = 0; i < t->edge_list.size(); i++) {
+			std::cout << "Edge " << i << " : " << (t->edge_list[i]->s1.x) << "," << (t->edge_list[i]->s1.y) << " - " << (t->edge_list[i]->s2.x) << "," << (t->edge_list[i]->s2.y) << std::endl;
+		}
 	}
 
 	MATHLIB_API void test() {

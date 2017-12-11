@@ -158,21 +158,22 @@ void Utils::edge_flipping(std::vector<edge*> edges)
 		edge * tmp_edge = ac.top();
 		ac.pop();
 
-		if (!check_delaunay_crit(tmp_edge)) {
+		if (tmp_edge->t2 != nullptr && !check_delaunay_crit(tmp_edge)) {
 			edge * a1, * a2, * a3, * a4;
-			a1 = tmp_edge->t1->a2;
-			a2 = tmp_edge->t2->a2;
-			a3 = tmp_edge->t2->a3;
-			a4 = tmp_edge->t1->a3;
+			a1 = tmp_edge->t1->a1;
+			a2 = tmp_edge->t2->a3;
+			a3 = tmp_edge->t2->a2;
+			a4 = tmp_edge->t1->a2;
 
-			tmp_edge->t2->a2->t1 = tmp_edge->t1;
-			tmp_edge->t1->a3->t1 = tmp_edge->t2;
+			a2->t1 = tmp_edge->t1;
+			a4->t1 = tmp_edge->t2;
 
-			tmp_edge->t1->a1 = tmp_edge;
+			tmp_edge->t1->a3->s1 = a1->s1;
+			tmp_edge->t1->a3->s2 = a2->s2;
 			tmp_edge->t1->a2 = a2;
-			tmp_edge->t1->a3 = a1;
 
-			tmp_edge->t2->a1 = tmp_edge;
+			tmp_edge->t2->a1->s1 = a2->s2;
+			tmp_edge->t2->a1->s2 = a1->s1;
 			tmp_edge->t2->a2 = a4;
 			tmp_edge->t2->a3 = a3;
 
@@ -189,6 +190,9 @@ bool Utils::check_delaunay_crit(Utils::edge * a)
 	triangle * t1 = a->t1;
 	triangle * t2 = a->t2;
 	Utils::cercle c = get_circumscribed_circle(t1);
+
+	if (c.r == 0.0f) return true;
+
 	glm::vec2 vector1 = Utils::get_vector_from_points(c.c, t1->a2->s2);
 	glm::vec2 vector2 = Utils::get_vector_from_points(c.c, t2->a2->s2);
 	return Utils::norm(vector1) > c.r && Utils::norm(vector2) > c.r;
@@ -298,7 +302,7 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 	glm::vec2 center;
 	if (straight1) {
 		if (straight2) {
-			std::cerr << "triangle plat" << std::endl;
+			//std::cerr << "triangle plat" << std::endl;
 			return cercle();
 		}
 		center.x = x1;
@@ -315,7 +319,7 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 	if (!straight1 && !straight2) {
 		float det = m2 - m1;
 		if (det == 0) {
-			std::cerr << "triangle plat" << std::endl;
+			//std::cerr << "triangle plat" << std::endl;
 			return cercle();
 		}
 		center.x = (p2 - p1) / det;

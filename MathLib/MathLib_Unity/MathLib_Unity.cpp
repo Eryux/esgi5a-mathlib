@@ -7,6 +7,10 @@ typedef int * (_cdecl * dll_mathlib_jarvis_walk_ptr)(float *, int, int*);
 
 typedef int * (_cdecl * dll_mathlib_graham_scan_ptr)(float *, int, int*);
 
+typedef float * (_cdecl * dll_mathlib_triangulate_ptr)(float *, int, int*);
+
+typedef float * (_cdecl * dll_mathlib_triangulate_delaunay_ptr)(float *, int, int*);
+
 HINSTANCE hGetProcIDDL;
 
 extern "C"
@@ -16,6 +20,10 @@ extern "C"
 	__declspec(dllexport) int * jarvis_walk(float *, int, int*);
 
 	__declspec(dllexport) int * graham_scan(float *, int, int*);
+
+	__declspec(dllexport) float * triangulate(float *, int, int*);
+
+	__declspec(dllexport) float * triangulate_delaunay(float *, int, int*);
 }
 
 void LoadDLL()
@@ -80,6 +88,36 @@ int * graham_scan(float * p, int s, int* o)
 	}
 
 	int * result = f(p, s, o);
+	freeDLL();
+	return result;
+}
+
+float * triangulate(float * p, int s, int * o) 
+{
+	LoadDLL();
+
+	dll_mathlib_triangulate_ptr f = (dll_mathlib_triangulate_ptr)GetProcAddress(hGetProcIDDL, "triangulate");
+	if (!f) {
+		std::cerr << "Could not find function triangulate in Mathlib.dll" << std::endl;
+		return nullptr;
+	}
+
+	float * result = f(p, s, o);
+	freeDLL();
+	return result;
+}
+
+float * triangulate_delaunay(float * p, int s, int * o)
+{
+	LoadDLL();
+
+	dll_mathlib_triangulate_ptr f = (dll_mathlib_triangulate_ptr)GetProcAddress(hGetProcIDDL, "triangulate_delaunay");
+	if (!f) {
+		std::cerr << "Could not find function triangulate_delaunay in Mathlib.dll" << std::endl;
+		return nullptr;
+	}
+
+	float * result = f(p, s, o);
 	freeDLL();
 	return result;
 }

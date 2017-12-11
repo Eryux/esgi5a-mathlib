@@ -25,6 +25,9 @@ namespace Mathlib {
 		MATHLIB_API int * graham_scan(float * points, int nb_point, int* out_size);
 
 		MATHLIB_API float * triangulate(float * points, int nb_point, int * out_size);
+
+		MATHLIB_API float * triangulate_delaunay(float * points, int nb_point, int * out_size);
+
 	}
 
 }
