@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Mathlib : MonoBehaviour {
 
@@ -34,6 +35,15 @@ public class Mathlib : MonoBehaviour {
 
     [SerializeField]
     MeshCreator meshCreate;
+
+    [SerializeField]
+    Dropdown convexeMethodSelect;
+
+    [SerializeField]
+    Dropdown triangulationMedthodSelect;
+
+    [SerializeField]
+    Toggle drawVoronoi;
     
     public List<PointObject> points;
 
@@ -69,6 +79,9 @@ public class Mathlib : MonoBehaviour {
             AddPoint();
 
         if (Input.GetKeyDown(KeyCode.X))
+            ClearAllPoint();
+
+        if (Input.GetKeyDown(KeyCode.Delete))
             RemovePoint();
 
         if (Input.GetKeyDown(KeyCode.J))
@@ -83,9 +96,6 @@ public class Mathlib : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.D))
             Action_TriangulateDelaunay();
 
-        if (Input.GetKeyDown(KeyCode.Delete))
-            ClearAllPoint();
-
         if (Input.GetMouseButtonDown(2))
         {
             if (selectedPoint != null)
@@ -93,6 +103,7 @@ public class Mathlib : MonoBehaviour {
                 Vector3 pos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.nearClipPlane));
                 pos.y = 0f;
                 selectedPoint.transform.position = pos;
+                Refresh();
             }
         }
 
@@ -132,6 +143,34 @@ public class Mathlib : MonoBehaviour {
             }
         }
 	}
+
+    public void Refresh()
+    {
+        if (points.Count < 3) return;
+
+        if (convexeMethodSelect.value == 1)
+        {
+            Action_JarvisWalk();
+        }
+        else if (convexeMethodSelect.value == 2)
+        {
+            Action_GrahamScan();
+        }
+
+        if (triangulationMedthodSelect.value == 1)
+        {
+            Action_Triangulate();
+        }
+        else if (triangulationMedthodSelect.value == 2)
+        {
+            Action_TriangulateDelaunay();
+        }
+
+        if (drawVoronoi.isOn)
+        {
+            // Draw voronoi
+        }
+    }
 
     // ------------------------------------
 
@@ -341,6 +380,8 @@ public class Mathlib : MonoBehaviour {
         var p = selectedPoint;
         points.Remove(p);
         Destroy(p.gameObject);
+
+        Refresh();
     }
 
     public void ToggleAddPoint()
@@ -371,6 +412,8 @@ public class Mathlib : MonoBehaviour {
         PointObject p = o.GetComponent<PointObject>();
         points.Add(p);
         SelectPoint(p);
+
+        Refresh();
     }
 
     void SelectPoint(PointObject p)

@@ -191,7 +191,7 @@ bool Utils::check_delaunay_crit(Utils::edge * a)
 	triangle * t2 = a->t2;
 	Utils::cercle c = get_circumscribed_circle(t1);
 
-	if (c.r == 0.0f) return true;
+	if (c.r == 0.0f) return false;
 
 	glm::vec2 vector1 = Utils::get_vector_from_points(c.c, t1->a2->s2);
 	glm::vec2 vector2 = Utils::get_vector_from_points(c.c, t2->a2->s2);
