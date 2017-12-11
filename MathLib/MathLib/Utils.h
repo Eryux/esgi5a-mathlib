@@ -32,6 +32,12 @@ namespace Utils {
 		float r;
 		glm::vec2 c;
 	};
+	
+	struct region {
+		region(glm::vec2 vertex) { this->vertex = vertex; }
+		glm::vec2 vertex;
+		std::vector<edge*> dual_edge_list;
+	};
 
 	float sign(float x);
 	//get the jarvis angle : arccos(pkpj.director_vec/||pkpj||.||director_vec||
@@ -62,13 +68,25 @@ namespace Utils {
 	// Cercle circonscrit
 	cercle get_circumscribed_circle(triangle * triangle);
 	//check si une arête est visible par un point
-	bool is_edge_visible(glm::vec2 point, edge* edge, std::vector<Utils::edge*> edge_list);
+	bool is_edge_visible(glm::vec2 point, edge* edge1, std::vector<edge*> edge_list);
 	//retourne la liste des arêtes correspondant à mon nuage de points
 	std::list<edge*> get_convex_envelope(std::vector<edge*> edge_list);
 	//convertit un vector<glm::vec2> en point*
 	float* convert_from_vector(std::vector<glm::vec2> points);
 	//convertit un vector<glm::vec*> en point*
-	float* convert_from_triangulation(triangulation triangulation);
+	//float* convert_from_triangulation(triangulation triangulation);
 	// renvoie le cercle circonscrit au triangle
 	cercle get_circumscribed_circle(triangle* triangle);
+	//calcule les regions du diagramme de voronoï 2D
+	std::vector<region*> get_voronoi_regions(std::vector<glm::vec2> points, std::vector<edge*> edge_list);
+	//sommet opposé a une arete dans un triangle
+	glm::vec2 get_third_vertex(triangle* triangle, edge* edge);
+	//milieu d'une arete
+	glm::vec2 get_edge_middle(edge* edge);
+	//retourne le pied de la hauteur dans edge
+	glm::vec2 get_height_foot(Utils::triangle* triangle, Utils::edge* edge);
+	//retourne le pied de la hauteur issue de A dans le triangle ABC
+	glm::vec2 get_height_foot(glm::vec2 A, glm::vec2 B, glm::vec2 C);
+	//calcule l'arête duale A* de l'arête en paramètre
+	edge* get_dual_edge(edge* edge);
 }

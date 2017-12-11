@@ -29,7 +29,7 @@ float Utils::oriented_angle_2PI(glm::vec2 vector1, glm::vec2 vector2)
 {
 	float angle = oriented_angle(vector1, vector2);
 	if (angle < 0) {
-		angle += 2 * PI;
+		angle += 2.0 * PI;
 	}
 	return angle;
 }
@@ -78,7 +78,6 @@ std::list<glm::vec2> Utils::triangulate_sort(std::vector<glm::vec2> points)
 
 	return result_list;	
 }
-
 
 std::list<int> Utils::graham_sort(glm::vec2 bary, std::vector<glm::vec2> points)
 {
@@ -148,7 +147,6 @@ std::vector<Utils::edge*> Utils::get_visible_edges(glm::vec2 point, std::list<ed
 	}
 	return visible_edges;
 }
-
 
 void Utils::edge_flipping(std::vector<edge*> edges)
 {
@@ -328,5 +326,115 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 
 
 	return cercle(center, radius);
+}
+
+std::vector<Utils::region*> Utils::get_voronoi_regions(std::vector<glm::vec2> points, std::vector<Utils::edge*> edge_list)
+{
+	std::vector<Utils::region*> regions;
+	for (glm::vec2 point : points) {
+		Utils::region* region = new Utils::region(point);
+		std::vector<Utils::edge*> linked_edges;
+		for (Utils::edge* edge : edge_list) {
+			if (point == edge->s1 || point == edge->s2) {
+				linked_edges.push_back(edge);
+			}
+		}
+		for (Utils::edge* edge : linked_edges) {
+			region->dual_edge_list.push_back(Utils::get_dual_edge(edge));
+		}
+		regions.push_back(region);
+	}
+	return regions;
+}
+
+glm::vec2 Utils::get_edge_middle(edge * edge)
+{
+	return glm::vec2((edge->s1.x + edge->s2.x) / 2, (edge->s1.y + edge->s2.y) / 2);
+}
+
+glm::vec2 Utils::get_third_vertex(Utils::triangle* triangle, Utils::edge* edge) {
+	if (triangle->a1 == edge) {
+		if (triangle->a2->s1 == edge->s1 || triangle->a2->s1 == edge->s2) {
+			return triangle->a2->s2;
+		}
+		else return triangle->a2->s1;
+	}
+	else {
+		if (triangle->a1->s1 == edge->s1 || triangle->a1->s1 == edge->s2) {
+			return triangle->a1->s2;
+		}
+		else return triangle->a1->s1;
+	}
+}
+
+glm::vec2 Utils::get_height_foot(Utils::triangle* triangle, Utils::edge* edge) {
+	glm::vec2 third_vertex = Utils::get_third_vertex(triangle, edge);
+	glm::vec2 A = Utils::get_third_vertex(triangle, triangle->a1);
+	glm::vec2 B = Utils::get_third_vertex(triangle, triangle->a2);
+	glm::vec2 C = Utils::get_third_vertex(triangle, triangle->a3);
+	if (third_vertex == A) {
+		return Utils::get_height_foot(A, B, C);
+	}
+	if (third_vertex == B) {
+		return Utils::get_height_foot(B, A, C);
+	}
+	if (third_vertex == C) {
+		return Utils::get_height_foot(C, B, A);
+	}
+	std::cerr << "probleme : get_height_foot, edge n'est pas dans triangle" << std::endl;
+	return glm::vec2();
+}
+
+glm::vec2 Utils::get_height_foot(glm::vec2 A, glm::vec2 B, glm::vec2 C) {
+	//BC : -m1 x + y = p1
+	float p1, m1, x1;
+	bool straight1 = false;
+	if (abs(C.x - B.x) <= 0.001) {
+		x1 = C.x;
+		straight1 = true;
+	}
+	else {
+		m1 = (C.y - B.y) / (C.x - B.x);
+		p1 = -m1 * B.x + B.y;
+	}
+
+	//AH : -1/m1 x + y = p2
+	float p2, m2, x2;
+	bool straight2 = false;
+	if (abs(m1) <= 0.001) {
+		x2 = A.x;
+		straight2 = true;
+	}
+	else {
+		m2 = 1 / m1;
+		p2 = -m2 * A.x + A.y;
+	}
+	if (straight1) return glm::vec2(x1, A.y);
+	if (straight2) return glm::vec2(x2, B.y);
+	float det = m2 - m1;
+	return glm::vec2((p2 - p1) / det, (p1*m2 - p2 * m1) / det);
+}
+
+Utils::edge* Utils::get_dual_edge(Utils::edge * edge)
+{
+	if (edge->t2 == nullptr) {
+		//cas pourri, calculer le centre du triangle, le milieu du edge et la hauteur partant du sommet opposé au edge
+		//faire partir du centre avec en vecteur directeur la hauteur la droite vers l'infini
+		glm::vec2 center = get_circumscribed_circle(edge->t1).c;
+		glm::vec2 middle = get_edge_middle(edge);
+		//recherche du 3e sommet
+		glm::vec2 third_vertex = get_third_vertex(edge->t1, edge);
+		glm::vec2 height_from_third_vertex = Utils::get_vector_from_points(third_vertex, Utils::get_height_foot(edge->t1, edge));
+		glm::vec2 far_point = glm::vec2(1000 * (third_vertex.x + height_from_third_vertex.x), 1000 * (third_vertex.y + height_from_third_vertex.y));
+		if (!Utils::is_colinear(Utils::edge(center, middle), Utils::edge(center, far_point))) {
+			std::cerr << "erreur dans le calcul de la hauteur ou de la demi-droite vers l'exterieur" << std::endl;
+		}
+		return new Utils::edge(center, far_point);
+	}
+	else {
+		glm::vec2 center1 = get_circumscribed_circle(edge->t1).c;
+		glm::vec2 center2 = get_circumscribed_circle(edge->t2).c;
+		return new Utils::edge(center1, center2);
+	}
 }
 
