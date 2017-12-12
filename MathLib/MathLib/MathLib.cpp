@@ -101,6 +101,7 @@ namespace Mathlib
 		int start = *it;
 		int pivot = start;
 		bool forward = false;
+		int d = 0;
 
 		do {
 			glm::vec2 prev, next;
@@ -127,8 +128,8 @@ namespace Mathlib
 				forward = true;
 			}
 			else {
-				if (it == sorted_points.begin()) {
-					it = std::prev(sorted_points.end());
+				if (*it == start) {
+					it = std::next(sorted_points.begin());
 					sorted_points.erase(sorted_points.begin());
 					start = *it;
 				}
@@ -143,6 +144,7 @@ namespace Mathlib
 			if (it != sorted_points.end())
 				pivot = *it;
 
+			d++;
 		} while (pivot != start || forward == false);
 
 		*out_size = sorted_points.size();

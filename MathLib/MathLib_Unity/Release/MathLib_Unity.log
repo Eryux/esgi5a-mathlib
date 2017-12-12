@@ -1,0 +1,22 @@
+﻿Build started 11/12/2017 22:27:40.
+     1>Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib_Unity\MathLib_Unity.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_UNITY_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_UNITY_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt MathLib_Unity.cpp stdafx.cpp
+         MathLib_Unity.cpp
+         stdafx.cpp
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.lib" /MACHINE:X86 /SAFESEH /DLL Release\dllmain.obj
+         Release\MathLib_Unity.obj
+         Release\stdafx.obj
+            Creating library D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.lib and object D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.exp
+         Generating code
+         All 18 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+         Finished generating code
+         MathLib_Unity.vcxproj -> D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib_Unity.dll
+     1>Done Building Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib_Unity\MathLib_Unity.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.05

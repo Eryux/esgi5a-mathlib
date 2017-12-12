@@ -1,0 +1,35 @@
+﻿Build started 11/12/2017 22:27:58.
+     1>Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib\MathLib.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I..\..\glm /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt dllmain.cpp
+         dllmain.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /I..\..\glm /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D MATHLIB_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt MathLib.cpp stdafx.cpp Utils.cpp
+         MathLib.cpp
+     1>MathLib.cpp(260): warning C4018: '<': signed/unsigned mismatch
+     1>MathLib.cpp(289): warning C4018: '<': signed/unsigned mismatch
+     1>MathLib.cpp(454): warning C4018: '<': signed/unsigned mismatch
+     1>MathLib.cpp(461): warning C4018: '<': signed/unsigned mismatch
+         stdafx.cpp
+         Utils.cpp
+     1>Utils.cpp(32): warning C4305: '+=': truncation from 'double' to 'float'
+     1>Utils.cpp(75): warning C4018: '<': signed/unsigned mismatch
+     1>Utils.cpp(84): warning C4018: '<': signed/unsigned mismatch
+     1>Utils.cpp(91): warning C4018: '<': signed/unsigned mismatch
+     1>Utils.cpp(98): warning C4018: '<': signed/unsigned mismatch
+     1>Utils.cpp(154): warning C4018: '<': signed/unsigned mismatch
+     1>Utils.cpp(247): warning C4018: '<': signed/unsigned mismatch
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.dll" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.lib" /MACHINE:X86 /SAFESEH /DLL Release\dllmain.obj
+         Release\MathLib.obj
+         Release\stdafx.obj
+         Release\Utils.obj
+            Creating library D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.lib and object D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.exp
+         Generating code
+         All 1050 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+         Finished generating code
+         MathLib.vcxproj -> D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\Release\MathLib.dll
+     1>Done Building Project "D:\Utilisateurs\Downloads\esgi5a-mathlib\MathLib\MathLib\MathLib.vcxproj" (Build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:02.12
