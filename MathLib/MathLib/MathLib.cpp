@@ -1,5 +1,5 @@
 #include <vector>
-
+#include <algorithm>
 #include "stdafx.h"
 #include "MathLib.h"
 #include "glm.hpp"
@@ -225,12 +225,40 @@ namespace Mathlib
 			std::list<Utils::edge*> convex_envelope = Utils::get_convex_envelope(edge_list);
 			std::vector<Utils::edge*> visible_edges = Utils::get_visible_edges(*f_it, convex_envelope, edge_list);
 			//3)b)
-			Utils::edge* s1_new = nullptr;
+			for (Utils::edge* edge : visible_edges) {
+				Utils::edge* e1_new = new Utils::edge(edge->s1, *f_it);
+				Utils::edge* e2_new = new Utils::edge(edge->s2, *f_it);
+				Utils::triangle* triangle = new Utils::triangle(edge, e1_new, e2_new);
+				//est ce que ma edge est deja dans la liste? -> je récupère sa position dans index
+				int index = Utils::find(edge_list, e1_new);
+				if (index != -1) {
+					// oui : on lui file le triangle en t2 (elle a forcément deja un t1)
+					edge_list[index]->t2 = triangle;
+				}
+				else {
+					//non : on lui met le triangle en t1 et on la met dedans
+					e1_new->t1 = triangle;
+					edge_list.push_back(e1_new);
+				}
+				//idem pour la deuxieme edge
+				index = Utils::find(edge_list, e2_new);
+				if (index != -1) {
+					edge_list[index]->t2 = triangle;
+				}
+				else {
+					e2_new->t1 = triangle;
+					edge_list.push_back(e2_new);
+				}
+				edge->t2 = triangle;
+				triangle_list.push_back(triangle);
+			}
+			/*Utils::edge* s1_new = nullptr;
 			Utils::edge* s2_new = nullptr;
 			for (Utils::edge* edge : visible_edges) {
 				if(s2_new == nullptr) s1_new = new Utils::edge(edge->s1, *f_it);
 				else s1_new = s2_new;
-				s2_new = new Utils::edge(edge->s2, *f_it);
+				if(edge->s1 == s1_new->s1) s2_new = new Utils::edge(edge->s2, *f_it);
+				else s2_new = new Utils::edge(edge->s1, *f_it);
 				Utils::triangle* triangle = new Utils::triangle(edge, s1_new, s2_new);
 				if(s1_new->t1 != nullptr) s1_new->t2 = triangle;
 				else s1_new->t1 = triangle;
@@ -239,7 +267,7 @@ namespace Mathlib
 				if(edge_list.back() != s1_new) edge_list.push_back(s1_new);
 				edge_list.push_back(s2_new);
 				triangle_list.push_back(triangle);
-			}
+			}*/
 		}
 		triangulation->edge_list = edge_list;
 		triangulation->triangle_list = triangle_list;
@@ -262,8 +290,9 @@ namespace Mathlib
 			result.push_back(t->triangle_list[i]->a1->s1.y);
 			result.push_back(t->triangle_list[i]->a1->s2.x);
 			result.push_back(t->triangle_list[i]->a1->s2.y);
-			result.push_back(t->triangle_list[i]->a2->s2.x);
-			result.push_back(t->triangle_list[i]->a2->s2.y);
+			glm::vec2 third_vertex = Utils::get_third_vertex(t->triangle_list[i], t->triangle_list[i]->a1);
+			result.push_back(third_vertex.x);
+			result.push_back(third_vertex.y);
 		}
 
 		*out_size = result.size();

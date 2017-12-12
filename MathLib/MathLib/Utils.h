@@ -89,4 +89,6 @@ namespace Utils {
 	glm::vec2 get_height_foot(glm::vec2 A, glm::vec2 B, glm::vec2 C);
 	//calcule l'arête duale A* de l'arête en paramètre
 	edge* get_dual_edge(edge* edge);
+	//retourne l'index de edge dans edge_list -1 si pas trouvé
+	int find(std::vector<edge*> edge_list, edge* edge);
 }

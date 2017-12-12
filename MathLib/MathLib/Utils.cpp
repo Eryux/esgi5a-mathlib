@@ -135,7 +135,7 @@ bool Utils::is_colinear(Utils::edge a1, Utils::edge b1) {
 	glm::vec2 b = glm::vec2(b1.s2.x - b1.s1.x, b1.s2.y - b1.s1.y);
 	if (a.x == 0.0f || b.x == 0.0f) return (b.x == 0.0f && a.x == 0.0f);
 	if (a.y == 0.0f || b.y == 0.0f) return (b.y == 0.0f && a.y == 0.0f);
-	return a.x / b.x - a.y / b.y < 0.001f;
+	return abs(a.x / b.x - a.y / b.y) < 0.001f;
 }
 
 std::vector<Utils::edge*> Utils::get_visible_edges(glm::vec2 point, std::list<edge*> convex_envelope, std::vector<Utils::edge*> edge_list) {
@@ -442,3 +442,16 @@ Utils::edge* Utils::get_dual_edge(Utils::edge * edge)
 	}
 }
 
+int Utils::find(std::vector<edge*> edge_list, edge* edge)
+{
+	for (int i = 0; i < edge_list.size(); i++) {
+		bool s1x = abs(edge_list[i]->s1.x - edge->s1.x) < 0.001;
+		bool s2x = abs(edge_list[i]->s2.x - edge->s2.x) < 0.001;
+		bool s1y = abs(edge_list[i]->s1.y - edge->s1.y) < 0.001;
+		bool s2y = abs(edge_list[i]->s2.y - edge->s2.y) < 0.001;
+		if ( s1x && s2x && s1y && s2y) {
+			return i;
+		}
+	}
+	return -1;
+}
