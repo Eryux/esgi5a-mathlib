@@ -153,29 +153,106 @@ void Utils::edge_flipping(std::vector<edge*> edges)
 	std::stack<edge*> ac;
 	for (int i = 0; i < edges.size(); i++) { if (edges[i]->t2 != nullptr) ac.push(edges[i]); }
 
-	while ( ! ac.empty()) 
+	while (!ac.empty())
 	{
 		edge * tmp_edge = ac.top();
 		ac.pop();
 
 		if (tmp_edge->t2 != nullptr && !check_delaunay_crit(tmp_edge)) {
-			edge * a1, * a2, * a3, * a4;
-			a1 = tmp_edge->t1->a1;
-			a2 = tmp_edge->t2->a3;
-			a3 = tmp_edge->t2->a2;
-			a4 = tmp_edge->t1->a2;
+			edge * a1, *a2, *a3, *a4;
+			glm::vec2 s1, s2, s3, s4;
+			s1 = tmp_edge->s1;
+			s2 = tmp_edge->s2;
+			s3 = Utils::get_third_vertex(tmp_edge->t2, tmp_edge);
+			s4 = Utils::get_third_vertex(tmp_edge->t1, tmp_edge);
 
-			a2->t1 = tmp_edge->t1;
-			a4->t1 = tmp_edge->t2;
+			//recherche des aretes de t1
+			if (tmp_edge->t1->a1 == tmp_edge) {
+				if (tmp_edge->t1->a2->s1 == s1 || tmp_edge->t1->a2->s2 == s1) {
+					a1 = tmp_edge->t1->a2;
+					a4 = tmp_edge->t1->a3;
+				}
+				else {
+					a4 = tmp_edge->t1->a2;
+					a1 = tmp_edge->t1->a3;
+				}
+			}
+			if (tmp_edge->t1->a2 == tmp_edge) {
+				if (tmp_edge->t1->a1->s1 == s1 || tmp_edge->t1->a1->s2 == s1) {
+					a1 = tmp_edge->t1->a1;
+					a4 = tmp_edge->t1->a3;
+				}
+				else {
+					a4 = tmp_edge->t1->a1;
+					a1 = tmp_edge->t1->a3;
+				}
+			}
+			if (tmp_edge->t1->a3 == tmp_edge) {
+				if (tmp_edge->t1->a1->s1 == s1 || tmp_edge->t1->a1->s2 == s1) {
+					a1 = tmp_edge->t1->a1;
+					a4 = tmp_edge->t1->a2;
+				}
+				else {
+					a4 = tmp_edge->t1->a1;
+					a1 = tmp_edge->t1->a2;
+				}
+			}
+			//recherche des aretes de t2
+			if (tmp_edge->t2->a1 == tmp_edge) {
+				if (tmp_edge->t2->a2->s1 == s1 || tmp_edge->t2->a2->s2 == s1) {
+					a2 = tmp_edge->t2->a2;
+					a3 = tmp_edge->t2->a3;
+				}
+				else {
+					a3 = tmp_edge->t2->a2;
+					a2 = tmp_edge->t2->a3;
+				}
+			}
+			if (tmp_edge->t2->a2 == tmp_edge) {
+				if (tmp_edge->t2->a1->s1 == s1 || tmp_edge->t2->a1->s2 == s1) {
+					a2 = tmp_edge->t2->a1;
+					a3 = tmp_edge->t2->a3;
+				}
+				else {
+					a3 = tmp_edge->t2->a1;
+					a2 = tmp_edge->t2->a3;
+				}
+			}
+			if (tmp_edge->t2->a3 == tmp_edge) {
+				if (tmp_edge->t2->a1->s1 == s1 || tmp_edge->t2->a1->s2 == s1) {
+					a2 = tmp_edge->t2->a1;
+					a3 = tmp_edge->t2->a2;
+				}
+				else {
+					a3 = tmp_edge->t2->a1;
+					a2 = tmp_edge->t2->a2;
+				}
+			}
 
-			tmp_edge->t1->a3->s1 = a1->s1;
-			tmp_edge->t1->a3->s2 = a2->s2;
+			//mise a jour des triangle de a2 et a4
+			if (Utils::get_third_vertex(a2->t1, a2) == s2) {
+				a2->t1 = tmp_edge->t1;
+			}
+			else {
+				a2->t2 = tmp_edge->t1;
+			}
+			if (Utils::get_third_vertex(a4->t1, a4) == s1) {
+				a4->t1 = tmp_edge->t2;
+			}
+			else {
+				a4->t2 = tmp_edge->t2;
+			}
+
+			tmp_edge->s1 = s3;
+			tmp_edge->s2 = s4;
+
+			tmp_edge->t1->a1 = a1;
 			tmp_edge->t1->a2 = a2;
+			tmp_edge->t1->a3 = tmp_edge;
 
-			tmp_edge->t2->a1->s1 = a2->s2;
-			tmp_edge->t2->a1->s2 = a1->s1;
+			tmp_edge->t2->a1 = a3;
 			tmp_edge->t2->a2 = a4;
-			tmp_edge->t2->a3 = a3;
+			tmp_edge->t2->a3 = tmp_edge;
 
 			ac.push(a1);
 			ac.push(a2);
@@ -189,13 +266,14 @@ bool Utils::check_delaunay_crit(Utils::edge * a)
 {
 	triangle * t1 = a->t1;
 	triangle * t2 = a->t2;
-	Utils::cercle c = get_circumscribed_circle(t1);
+	Utils::cercle c1 = get_circumscribed_circle(t1);
+	Utils::cercle c2 = get_circumscribed_circle(t2);
 
-	if (c.r == 0.0f) return false;
+	if (c1.r == 0.0f && c2.r == 0.0f) return false;
 
-	glm::vec2 vector1 = Utils::get_vector_from_points(c.c, t1->a2->s2);
-	glm::vec2 vector2 = Utils::get_vector_from_points(c.c, t2->a2->s2);
-	return Utils::norm(vector1) > c.r && Utils::norm(vector2) > c.r;
+	glm::vec2 vector1 = Utils::get_vector_from_points(c2.c, Utils::get_third_vertex(t1 , a));
+	glm::vec2 vector2 = Utils::get_vector_from_points(c1.c, Utils::get_third_vertex(t2, a));
+	return Utils::norm(vector1) > c2.r && Utils::norm(vector2) > c1.r;
 }
 
 bool Utils::is_edge_visible(glm::vec2 point, edge * edge, std::vector<Utils::edge*> edge_list)

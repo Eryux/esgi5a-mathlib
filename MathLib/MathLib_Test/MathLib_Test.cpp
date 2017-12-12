@@ -8,10 +8,10 @@
 
 int main()
 {
-	Mathlib::test();
+	//Mathlib::test();
 	
-	/*float points[] = { -4.30f, -3.80f, -3.80f, 3.83f, -0.52f, -0.49f, 1.82f, 3.98f, 2.14f, -3.54f, 4.77f, -4.51f, 6.90f, -4.58f, 8.31f, -4.51f, 9.66f, -5.86f};
-	int size = 18;
+	float points[] = { -0.07f, 8.35f, -4.73f, 0.18f, -0.04f, -8.35f, 4.65f, 0.18f };
+	int size = 8;
 
 	//float points[] = { 0.0f, 1.0f, 0.0f, -1.0f, 1.0f, 0.0f, -1.0f, 0.0f };
 	//int size = 8;
@@ -68,7 +68,7 @@ int main()
 		std::cout << rt[i + 4] << "," << rt[i + 5] << std::endl;
 	}
 
-	std::cout << "FIN -------------------" << std::endl;*/
+	std::cout << "FIN -------------------" << std::endl;
 	
 	int quit = 0;
 	std::cin >> quit;

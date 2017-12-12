@@ -322,8 +322,8 @@ namespace Mathlib
 			result.push_back(t->triangle_list[i]->a1->s1.y);
 			result.push_back(t->triangle_list[i]->a1->s2.x);
 			result.push_back(t->triangle_list[i]->a1->s2.y);
-			result.push_back(t->triangle_list[i]->a2->s2.x);
-			result.push_back(t->triangle_list[i]->a2->s2.y);
+			result.push_back(Utils::get_third_vertex(t->triangle_list[i], t->triangle_list[i]->a1).x);
+			result.push_back(Utils::get_third_vertex(t->triangle_list[i], t->triangle_list[i]->a1).y);
 		}
 
 		*out_size = result.size();
