@@ -273,7 +273,7 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 	float p1, m1, x1;
 	bool straight1 = false;
 	if (abs(a1s2.y - a1s1.y) > 0.001) {//cas y = mx+p
-		m1 = (a1s2.x - a1s1.x) / (a1s2.y - a1s1.y); //TODO check!=milieu
+		m1 = -(a1s2.x - a1s1.x) / (a1s2.y - a1s1.y); //TODO check!=milieu
 		p1 = middle1.y - m1*middle1.x;
 		// on a -m1 x + y - p1 = 0
 	}
@@ -289,7 +289,7 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 	float p2, m2, x2;
 	bool straight2 = false;
 	if (abs(a2s2.y - a2s1.y) > 0.001) {
-		m2 = (a2s2.x - a2s1.x) / (a2s2.y - a2s1.y); //TODO check!=0
+		m2 = -(a2s2.x - a2s1.x) / (a2s2.y - a2s1.y); //TODO check!=0
 		p2 = middle2.y - m2*middle2.x;
 		// on a -m2 x + y - p2 = 0
 	}
@@ -322,7 +322,7 @@ Utils::cercle Utils::get_circumscribed_circle(Utils::triangle* triangle){
 			//std::cerr << "triangle plat" << std::endl;
 			return cercle();
 		}
-		center.x = (p2 - p1) / det;
+		center.x = (p2 - p1) / -det;
 		center.y = (p1*m2 - p2 * m1) / det;
 	}
 	float radius = Utils::norm(Utils::get_vector_from_points(center, a1s1));

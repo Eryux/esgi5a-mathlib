@@ -494,6 +494,20 @@ namespace Mathlib
 		}
 	}
 
+	void test_circle()
+	{
+		glm::vec2 a = glm::vec2(0, 1);
+		glm::vec2 b = glm::vec2(3, 2);
+		glm::vec2 c = glm::vec2(6, 1);
+
+		/*glm::vec2 a = glm::vec2(0, 0);
+		glm::vec2 b = glm::vec2(0.5f, 0.5f);
+		glm::vec2 c = glm::vec2(-2,2);*/
+
+		std::cout << Utils::get_circumscribed_circle(new Utils::triangle(new Utils::edge(a, b), new Utils::edge(b, c), new Utils::edge(c, a))).c.x << std::endl
+			<< Utils::get_circumscribed_circle(new Utils::triangle(new Utils::edge(a, b), new Utils::edge(b, c), new Utils::edge(c, a))).c.y << std::endl;
+	}
+
 	MATHLIB_API void test() {
 		/*std::cout << "test du barycentre : " << std::boolalpha << test_barycenter() << std::endl;
 		std::cout << "test du produit scalaire : " << std::boolalpha << test_scalar_product() << std::endl;
@@ -503,6 +517,7 @@ namespace Mathlib
 		std::cout << "test du oriented angle 2PI: " << std::boolalpha << test_oriented_angle_2PI() << std::endl;
 		std::cout << "test du graham sort : " << std::boolalpha << test_graham_sort() << std::endl;
 		std::cout << "test de l'incrementation triangulaire pour 2 points : " << std::boolalpha << test_incremental_triangulation_size2() << std::endl;*/
+		test_circle();
 		//test_triangulation();
 		test_flipping();
 	}
